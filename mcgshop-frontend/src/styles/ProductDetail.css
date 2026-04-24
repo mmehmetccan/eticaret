@@ -1,0 +1,1192 @@
+/* ==================== PRODUCT DETAIL STILLERI ==================== */
+
+/* Ana Container */
+.product-detail {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 48px 24px;
+  min-height: calc(100vh - 80px);
+}
+
+/* ProductDetail.css - Yeni stiller */
+
+/* Görsel Alanı */
+.product-detail-image-section {
+  position: relative;
+}
+
+.product-detail-main-image {
+  position: relative;
+  border-radius: 24px;
+  overflow: hidden;
+  background: #f8fafc;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.product-detail-main-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Thumbnails */
+.product-detail-thumbnails {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.thumbnail {
+  width: 70px;
+  height: 70px;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.thumbnail:hover {
+  transform: scale(1.05);
+}
+
+.thumbnail-active {
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+}
+
+/* Resim navigasyon butonları */
+.image-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.image-nav-btn:hover {
+  background: #4f46e5;
+  color: white;
+}
+
+.image-nav-prev {
+  left: 12px;
+}
+
+.image-nav-next {
+  right: 12px;
+}
+
+/* Rozetler */
+.product-detail-badges {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.discount-badge {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.free-shipping-badge {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.new-badge {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+/* ProductDetail.css - Yorum stilleri */
+
+/* Tabs */
+.product-detail-tabs {
+  margin-top: 48px;
+  background: white;
+  border-radius: 32px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.tabs-header {
+  display: flex;
+  border-bottom: 1px solid #f1f5f9;
+  background: #f8fafc;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 16px 24px;
+  font-weight: 800;
+  font-size: 14px;
+  color: #64748b;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.tab-btn:hover {
+  color: #4f46e5;
+}
+
+.tab-active {
+  color: #4f46e5;
+  border-bottom: 2px solid #4f46e5;
+  background: white;
+}
+
+.tabs-content {
+  padding: 32px;
+}
+
+/* Ürün Detayları */
+.product-details-content h3 {
+  font-size: 18px;
+  font-weight: 800;
+  color: #1e293b;
+  margin-bottom: 16px;
+  margin-top: 24px;
+}
+
+.product-details-content h3:first-child {
+  margin-top: 0;
+}
+
+.product-details-content ul {
+  list-style: none;
+  padding: 0;
+}
+
+.product-details-content li {
+  padding: 8px 0;
+  color: #475569;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+/* Yorumlar */
+.reviews-section {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.review-form-card {
+  background: #f8fafc;
+  border-radius: 24px;
+  padding: 24px;
+}
+
+.review-form-card h3 {
+  font-size: 18px;
+  font-weight: 800;
+  color: #1e293b;
+  margin-bottom: 20px;
+}
+
+.rating-input {
+  margin-bottom: 20px;
+}
+
+.rating-input label {
+  display: block;
+  font-weight: 700;
+  color: #475569;
+  margin-bottom: 8px;
+}
+
+.star-rating {
+  display: flex;
+  gap: 8px;
+}
+
+.star-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  padding: 0;
+}
+
+.star-btn:hover {
+  transform: scale(1.1);
+}
+
+/* Kısa açıklama stili */
+.short-description-text {
+    color: #475569;
+    line-height: 1.6;
+    margin-bottom: 25px;
+    white-space: pre-wrap;
+}
+
+/* Zengin detaylar ve Resimlerin alt alta dizilmesi */
+.rich-details-section {
+    margin-top: 24px;
+}
+
+.rich-details-section h3 {
+    font-size: 20px;
+    font-weight: 800;
+    color: #1e293b;
+    margin-bottom: 16px;
+}
+
+.details-html-render {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    line-height: 1.8;
+    color: #334155;
+}
+
+.details-html-render h3 {
+    font-size: 18px;
+    font-weight: 800;
+    color: #1e293b;
+    margin-top: 20px;
+    margin-bottom: 12px;
+}
+
+.details-html-render h4 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-top: 16px;
+    margin-bottom: 8px;
+}
+
+.details-html-render p {
+    margin-bottom: 12px;
+}
+
+.details-html-render ul, 
+.details-html-render ol {
+    margin-left: 20px;
+    margin-bottom: 16px;
+}
+
+.details-html-render li {
+    margin-bottom: 6px;
+}
+
+.details-html-render img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 16px;
+    display: block;
+    margin: 20px 0;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.details-html-render table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+}
+
+.details-html-render th,
+.details-html-render td {
+    border: 1px solid #e2e8f0;
+    padding: 10px;
+    text-align: left;
+}
+
+.details-html-render th {
+    background: #f8fafc;
+    font-weight: 700;
+}
+/* ============================================ */
+/* PROFESYONEL RESİM MODAL STİLLERİ */
+/* ============================================ */
+
+.image-modal-zoom-controls {
+  position: absolute;
+  top: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 8px 20px;
+  border-radius: 50px;
+  backdrop-filter: blur(8px);
+  z-index: 15;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.zoom-btn {
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  transition: all 0.3s;
+}
+
+.zoom-btn:hover {
+  background: rgba(255, 255, 255, 0.35);
+  transform: scale(1.1);
+}
+
+.zoom-level {
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  min-width: 50px;
+  text-align: center;
+  font-family: monospace;
+}
+
+.reset-btn {
+  background: rgba(102, 126, 234, 0.6);
+  border-radius: 30px;
+  padding: 0 16px;
+  width: auto;
+}
+
+.reset-btn:hover {
+  background: #667eea;
+}
+
+/* ============================================ */
+/* PROFESYONEL RESİM MODAL STİLLERİ - BÜYÜK RESİM */
+/* ============================================ */
+
+.image-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.98);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: modalFadeIn 0.3s ease;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.image-modal-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-modal-close {
+  position: absolute;
+  top: 25px;
+  right: 25px;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  transition: all 0.3s;
+  z-index: 15;
+  backdrop-filter: blur(4px);
+}
+
+.image-modal-close:hover {
+  background: rgba(255, 255, 255, 0.4);
+  transform: scale(1.1) rotate(90deg);
+}
+
+.image-modal-main {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #000;
+}
+
+.image-modal-img {
+  max-width: 90vw;
+  max-height: 85vh;
+  object-fit: contain;
+  transition: transform 0.2s ease;
+  user-select: none;
+  pointer-events: auto;
+}
+
+/* Aktif sürükleme durumunda imleç */
+.image-modal-main:active {
+  cursor: grabbing !important;
+}
+
+.image-modal-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  border-radius: 50%;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  transition: all 0.3s;
+  z-index: 10;
+  backdrop-filter: blur(4px);
+}
+
+.image-modal-nav:hover {
+  background: rgba(255, 255, 255, 0.35);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.image-modal-prev {
+  left: 30px;
+}
+
+.image-modal-next {
+  right: 30px;
+}
+
+.image-modal-footer {
+  position: absolute;
+  bottom: 30px;
+  left: 0;
+  right: 0;
+  text-align: center;
+}
+
+.image-modal-counter {
+  color: white;
+  font-size: 14px;
+  margin-bottom: 12px;
+  background: rgba(0, 0, 0, 0.7);
+  display: inline-block;
+  padding: 6px 18px;
+  border-radius: 30px;
+  font-weight: 600;
+  backdrop-filter: blur(4px);
+}
+
+.image-modal-thumbnails {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 12px 20px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 60px;
+  max-width: 85%;
+  margin: 0 auto;
+  backdrop-filter: blur(8px);
+}
+
+.modal-thumbnail-item {
+  width: 65px;
+  height: 65px;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.3s;
+  opacity: 0.6;
+}
+
+.modal-thumbnail-item:hover {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+.modal-thumbnail-item.active {
+  border-color: #667eea;
+  opacity: 1;
+  box-shadow: 0 0 15px rgba(102, 126, 234, 0.5);
+}
+
+.modal-thumbnail-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Zoom ikonu */
+.image-zoom-icon {
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+  backdrop-filter: blur(4px);
+}
+
+.product-detail-main-image:hover .image-zoom-icon {
+  opacity: 1;
+}
+
+
+/* Özellik listesi */
+.specs-list {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 30px;
+}
+
+.specs-list li {
+    padding: 10px 0;
+    border-bottom: 1px solid #f1f5f9;
+    color: #475569;
+}
+
+.specs-list li strong {
+    color: #1e293b;
+    width: 120px;
+    display: inline-block;
+}
+
+.review-textarea {
+  width: 100%;
+  padding: 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 16px;
+  font-family: inherit;
+  font-size: 14px;
+  resize: vertical;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.review-textarea:focus {
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.submit-review-btn {
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 40px;
+  font-weight: 800;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  border: none;
+  transition: all 0.3s ease;
+  margin-top: 16px;
+}
+
+.submit-review-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px -5px rgba(79, 70, 229, 0.4);
+}
+
+/* Yorum Listesi */
+.reviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.review-item {
+  background: white;
+  border: 1px solid #f1f5f9;
+  border-radius: 20px;
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+.review-item:hover {
+  box-shadow: 0 5px 15px -5px rgba(0, 0, 0, 0.05);
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.review-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.review-avatar {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  border-radius: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 800;
+  font-size: 16px;
+}
+
+.review-user-name {
+  font-weight: 800;
+  color: #1e293b;
+  margin-bottom: 2px;
+}
+
+.review-date {
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.review-rating {
+  display: flex;
+  gap: 2px;
+}
+
+.review-comment {
+  color: #475569;
+  line-height: 1.6;
+  margin-top: 8px;
+}
+
+.no-reviews {
+  text-align: center;
+  padding: 40px;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .tabs-content {
+    padding: 20px;
+  }
+  
+  .review-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .star-rating {
+    gap: 4px;
+  }
+  
+  .star-btn svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* Fiyat bölümü */
+.product-detail-prices {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.product-price-original {
+  font-size: 18px;
+  color: #94a3b8;
+  text-decoration: line-through;
+}
+
+.product-price-discount {
+  font-size: 36px;
+  font-weight: 900;
+  color: #ef4444;
+}
+
+.product-price-current {
+  font-size: 36px;
+  font-weight: 900;
+  color: #1e293b;
+}
+/* Geri Butonu */
+.product-detail-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #94a3b8;
+  font-weight: 700;
+  margin-bottom: 32px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-size: 14px;
+}
+
+.product-detail-back-btn:hover {
+  color: #3b82f6;
+  transform: translateX(-6px);
+}
+
+/* Ana Kart */
+.product-detail-card {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  background: white;
+  padding: 32px;
+  border-radius: 48px;
+  box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.1);
+  border: 1px solid #f8fafc;
+}
+
+/* Görsel Alanı */
+.product-detail-image {
+  position: relative;
+  background: #f8fafc;
+  border-radius: 40px;
+  overflow: hidden;
+  min-height: 500px;
+}
+
+.product-detail-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.product-detail-image:hover img {
+  transform: scale(1.05);
+}
+
+.product-detail-image-grayscale {
+  filter: grayscale(100%);
+}
+
+.product-detail-image-opacity {
+  opacity: 0.5;
+}
+
+/* Favori Butonu */
+.product-detail-fav-btn {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  padding: 16px;
+  border-radius: 20px;
+  box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.product-detail-fav-btn:hover {
+  transform: scale(1.1);
+}
+
+.fav-active {
+  background: #ef4444;
+  color: white;
+}
+
+.fav-inactive {
+  background: white;
+  color: #ef4444;
+}
+
+/* Stok Overlay */
+.product-detail-stock-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+}
+
+.product-detail-stock-badge {
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  color: white;
+  padding: 12px 32px;
+  border-radius: 48px;
+  font-weight: 900;
+  font-size: 20px;
+  text-transform: uppercase;
+}
+
+/* Bilgi Alanı */
+.product-detail-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 24px;
+}
+
+/* Header */
+.product-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.product-detail-category {
+  background: #eef2ff;
+  color: #3b82f6;
+  padding: 6px 16px;
+  border-radius: 40px;
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.product-detail-stock {
+  padding: 4px 12px;
+  border-radius: 40px;
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.stock-in {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.stock-out {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+/* Ürün Adı */
+.product-detail-name {
+  font-size: 36px;
+  font-weight: 900;
+  color: #1e293b;
+  margin-bottom: 16px;
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: -0.5px;
+}
+
+/* Rating */
+.product-detail-rating {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.product-detail-rating-star {
+  color: #f59e0b;
+}
+
+.product-detail-rating-value {
+  font-weight: 900;
+  color: #f59e0b;
+}
+
+.product-detail-rating-count {
+  color: #cbd5e1;
+  font-weight: 500;
+}
+
+/* Açıklama */
+.product-detail-description {
+  color: #64748b;
+  font-weight: 500;
+  line-height: 1.6;
+  font-size: 16px;
+  margin-top: 8px;
+}
+
+/* Fiyat Kartı */
+.product-detail-price-card {
+  background: #f8fafc;
+  padding: 32px;
+  border-radius: 40px;
+  border: 1px solid #f1f5f9;
+  margin-top: 16px;
+}
+
+.product-detail-price-label {
+  color: #94a3b8;
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 4px;
+}
+
+.product-detail-price {
+  font-size: 48px;
+  font-weight: 900;
+  letter-spacing: -1px;
+  margin-bottom: 24px;
+}
+
+.price-normal {
+  color: #3b82f6;
+}
+
+.price-outstock {
+  color: #94a3b8;
+}
+
+/* Sepete Ekle Butonu */
+.product-detail-add-btn {
+  width: 100%;
+  padding: 24px;
+  border-radius: 32px;
+  font-weight: 900;
+  font-size: 18px;
+  color: white;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.btn-add-active {
+  background: #3b82f6;
+}
+
+.btn-add-active:hover {
+  background: #2563eb;
+  transform: translateY(-2px);
+}
+
+.btn-add-disabled {
+  background: #cbd5e1;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Footer Grid */
+.product-detail-footer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.product-detail-footer-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: white;
+  border-radius: 20px;
+  border: 1px solid #f1f5f9;
+}
+
+.product-detail-footer-text {
+  font-size: 10px;
+  font-weight: 900;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  line-height: 1.3;
+}
+
+/* Loading State */
+.product-detail-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 80px);
+  gap: 16px;
+}
+
+.product-detail-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid #e2e8f0;
+  border-top-color: #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.product-detail-loading-text {
+  font-weight: 900;
+  color: #3b82f6;
+}
+
+/* Error State */
+.product-detail-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 80px);
+}
+
+.product-detail-error-text {
+  font-weight: 900;
+  font-size: 24px;
+  color: #ef4444;
+}
+
+/* Animasyonlar */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.product-detail-card {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .product-detail-card {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    padding: 24px;
+  }
+  
+  .product-detail-image {
+    min-height: 400px;
+  }
+  
+  .product-detail-name {
+    font-size: 28px;
+  }
+  
+  .product-detail-price {
+    font-size: 36px;
+  }
+}
+
+@media (max-width: 768px) {
+  .product-detail {
+    padding: 24px 16px;
+  }
+  
+  .product-detail-image {
+    min-height: 300px;
+  }
+  
+  .product-detail-name {
+    font-size: 24px;
+  }
+  
+  .product-detail-price-card {
+    padding: 20px;
+  }
+  
+  .product-detail-add-btn {
+    padding: 18px;
+    font-size: 14px;
+  }
+  
+  .product-detail-footer {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 768px) {
+  .image-modal-nav {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .image-modal-nav svg {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .modal-thumbnail-item {
+    width: 45px;
+    height: 45px;
+    border-radius: 8px;
+  }
+  
+  .image-modal-img {
+    max-width: 95%;
+    max-height: 80%;
+  }
+  
+  .image-modal-thumbnails {
+    border-radius: 30px;
+    padding: 8px 12px;
+    gap: 8px;
+  }
+  
+  .image-modal-counter {
+    font-size: 12px;
+    padding: 4px 12px;
+  }
+}
