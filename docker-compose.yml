@@ -3,7 +3,7 @@ services:
   app:
     build: .
     ports:
-      - "5000:5000"
+      - "5001:5000"
     environment:
       - DB_HOST=your_db_host
       - DB_USER=your_db_user
