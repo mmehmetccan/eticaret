@@ -4,18 +4,22 @@
 export const getImageUrl = (imagePath) => {
   if (!imagePath) return 'https://placehold.co/600x600/e2e8f0/64748b?text=No+Image';
   
+  // Eğer zaten tam bir link ise direkt döndür
   if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
     return imagePath;
   }
   
-const API_URL = 'http://82.29.168.62:5001/api';
-  const BASE_URL = API_BASE_URL.replace('/api', '');
+  // BURASI DÜZELTİLDİ: Değişken isimleri eşitlendi
+  const API_URL = import.meta.env.VITE_API_URL || 'http://uskozmetik.com/api';
+  // '/api' kısmını atarak ana domaini alıyoruz (Örn: http://uskozmetik.com)
+  const BASE_URL = API_URL.replace('/api', '');
   
+  // Backend'de resimler genelde public/uploads veya /uploads altında olur
   if (imagePath.startsWith('/uploads/')) {
     return `${BASE_URL}${imagePath}`;
   }
   
-  return imagePath;
+return imagePath.startsWith('/') ? `${BASE_URL}${imagePath}` : `${BASE_URL}/${imagePath}`;
 };
 
 // Sayıyı Türkiye formatında göster (Sadece Tam Sayı - 500 TL gibi)
