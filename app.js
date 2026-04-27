@@ -11,44 +11,31 @@ const orderRoutes = require('./src/api/routes/orderRoutes');
 const productRoutes = require('./src/api/routes/productRoutes');
 const reviewRoutes = require('./src/api/routes/reviewRoutes');
 
-// CORS ayarları (VPS için)
+// CORS ayarları
 const allowedOrigins = [
     'http://localhost:5173',
     'http://localhost:5174',
     process.env.FRONTEND_URL,
-    process.env.FRONTEND_URL?.replace('https://', 'http://'),
-    'https://www.mcgshop.com',  // Kendi domaininizle değiştirin
+    'https://www.mcgshop.com',
     'http://www.mcgshop.com'
 ].filter(Boolean);
 
 app.use(cors({
     origin: function(origin, callback) {
-        // origin yoksa (Postman, curl gibi) izin ver
         if (!origin) return callback(null, true);
         if (allowedOrigins.includes(origin) || process.env.NODE_ENV !== 'production') {
             callback(null, true);
         } else {
-            console.log('❌ CORS engellendi:', origin);
-            callback(new Error('CORS politikası tarafından engellendi'));
+            callback(new Error('CORS engellendi'));
         }
     },
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+    credentials: true
 }));
 
-// JSON body parser
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-// Uploads klasörü (resimler için)
-app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
-// Frontend Build Dosyalarını Servis Et
-app.use(express.static(path.join(__dirname, 'public')));
 
-// Rotaları Kullan
+// 1. ÖNCE API ROTALARI
 app.use('/api/users', userRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/cart', cartRoutes);
@@ -56,14 +43,18 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/reviews', reviewRoutes);
 
-// 404 handler
-// API dışındaki tüm istekleri frontend'e (index.html) yönlendir
-app.get('(.*)', (req, res) => {
-    // Eğer istek /api ile başlıyorsa ama bulunamadıysa 404 döndür
+// 2. SONRA STATİK DOSYALAR (Resimler ve Build dosyaları)
+app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
+app.use(express.static(path.join(__dirname, 'public')));
+
+// 3. EN SON SPA YÖNLENDİRMESİ (Sadece API olmayan istekler için)
+// Hata veren regexli get yerine bu kesin çözümü kullan:
+app.use((req, res, next) => {
+    // Eğer istek /api ile başlıyorsa ve buraya kadar düştüyse 404 dön
     if (req.path.startsWith('/api')) {
-        return res.status(404).json({ error: 'API endpoint bulunamadı' });
+        return res.status(404).json({ message: "API endpoint bulunamadı" });
     }
-    // Geri kalan her şey için index.html gönder
+    // Geri kalan her şeyi frontend'e yönlendir
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 

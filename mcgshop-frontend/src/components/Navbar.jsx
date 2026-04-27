@@ -368,7 +368,7 @@ const Navbar = () => {
                     >
                       <div className="mcg-search-result-image">
                         <img 
-                          src={product.image_url ? `http://localhost:5000${product.image_url}` : 'https://placehold.co/44x44/e2e8f0/64748b?text=No+Image'} 
+                          src={product.image_url ? `http://82.29.168.62:5001${product.image_url}` : 'https://placehold.co/44x44/e2e8f0/64748b?text=No+Image'} 
                           alt={product.name}
                         />
                       </div>

@@ -8,7 +8,7 @@ export const getImageUrl = (imagePath) => {
     return imagePath;
   }
   
-  const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_URL = 'http://82.29.168.62:5001/api';
   const BASE_URL = API_BASE_URL.replace('/api', '');
   
   if (imagePath.startsWith('/uploads/')) {

@@ -33,7 +33,7 @@ const ImageModal = ({ images, currentIndex, onClose, onNext, onPrev }) => {
         {/* Ana Resim */}
         <div className="image-modal-main">
           <img 
-            src={`http://localhost:5000${currentImage?.image_url || currentImage}`} 
+            src={`http://82.29.168.62:5001${currentImage?.image_url || currentImage}`} 
             alt={`Resim ${currentIndex + 1}`}
           />
         </div>
@@ -66,7 +66,7 @@ const ImageModal = ({ images, currentIndex, onClose, onNext, onPrev }) => {
                   onClick={() => onPrev && onPrev(idx)} // index'e gitmek için
                 >
                   <img 
-                    src={`http://localhost:5000${img.image_url || img}`} 
+                    src={`http://82.29.168.62:5001${img.image_url || img}`} 
                     alt={`Küçük resim ${idx + 1}`}
                   />
                 </div>
