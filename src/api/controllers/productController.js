@@ -199,8 +199,12 @@ const addProductImage = async (req, res) => {
         const { productId } = req.params;
         console.log("📸 Gelen Dosya:", req.file); // Sunucu terminalinde (docker logs) bunu kontrol et
 
+          console.log("📸 req.file:", req.file); // DEBUG - Çok önemli!
+    console.log("📸 req.params:", req.params);
+    console.log("📸 req.body:", req.body);
+    
         if (!req.file) {
-            return res.status(400).json({ error: "Resim dosyası sunucuya ulaşmadı." });
+            return res.status(400).json({ error: "Resim dosyası gelmedi. Multer çalışmıyor olabilir." });
         }
 
         const image_url = `/uploads/${req.file.filename}`;
