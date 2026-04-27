@@ -56,7 +56,7 @@ app.use('/api/reviews', reviewRoutes);
 
 // 404 handler
 // API dışındaki tüm istekleri frontend'e (index.html) yönlendir
-app.get('*', (req, res) => {
+app.get('(.*)', (req, res) => {
     // Eğer istek /api ile başlıyorsa ama bulunamadıysa 404 döndür
     if (req.path.startsWith('/api')) {
         return res.status(404).json({ error: 'API endpoint bulunamadı' });
@@ -64,6 +64,7 @@ app.get('*', (req, res) => {
     // Geri kalan her şey için index.html gönder
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
+
 // Global hata yakalayıcı
 app.use((err, req, res, next) => {
     console.error('❌ Hata:', err.message);
