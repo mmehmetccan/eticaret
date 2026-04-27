@@ -44,7 +44,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/reviews', reviewRoutes);
 
 // 2. SONRA STATİK DOSYALAR (Resimler ve Build dosyaları)
-app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // 3. EN SON SPA YÖNLENDİRMESİ (Sadece API olmayan istekler için)
