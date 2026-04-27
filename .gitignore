@@ -8,7 +8,6 @@ yarn-error.log*
 .env
 .env.local
 .env.production
-
 # Build outputs
 dist/
 build/
@@ -33,3 +32,8 @@ uploads/
 
 # PM2
 .pm2/
+
+# Docker
+docker-compose.yml
+.docker/
+Dockerfile
