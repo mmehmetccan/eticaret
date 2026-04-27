@@ -3,7 +3,8 @@ const path = require('path');
 const fs = require('fs');
 
 // Klasör yoksa otomatik oluşturma mantığı
-const uploadDir = path.join(__dirname, '../../../public/uploads');
+// Docker içindeki köprü kurduğumuz /app/uploads klasörüne doğrudan gider
+const uploadDir = path.join(process.cwd(), 'uploads');
 if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
 }

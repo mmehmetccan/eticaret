@@ -1,11 +1,35 @@
 version: '3.8'
+
 services:
   app:
     build: .
+    container_name: eticaret-app-1
     ports:
       - "5001:5000"
-    environment:
-      - DB_HOST=your_db_host
-      - DB_USER=your_db_user
-      - JWT_SECRET=${JWT_SECRET}
+    # environment yerine env_file kullanmak çok daha temizdir
+    env_file:
+      - .env
+    # Resimlerin silinmemesi için bu köprü şart
+    volumes:
+      - ./uploads:/app/uploads
     restart: always
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:8.0
+    container_name: eticaret-mysql-1
+    restart: always
+    ports:
+      - "3307:3306"
+    env_file:
+      - .env
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+      - MYSQL_DATABASE=uskozmetik
+    # Veritabanı kayıtlarının silinmemesi için bu köprü şart
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:

@@ -241,8 +241,9 @@ const AdminPanel = () => {
 
     try {
       setImageUploadLoading(true);
-      const res = await api.post('/admin/upload-image', formData); 
-      const imageUrl = getImageUrl(res.data.image_url);
+const res = await api.post('/admin/upload-image', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+});      const imageUrl = getImageUrl(res.data.image_url);
       
       setProductForm(prev => ({
         ...prev,
@@ -371,33 +372,29 @@ const AdminPanel = () => {
 };
 
 const handleImageUpload = async (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
+    const file = e.target.files[0];
+    if (!file) return;
 
-  const formData = new FormData();
-  // 'image' isminin Multer'daki isimle (upload.single('image')) aynı olduğundan emin ol
-  formData.append('image', file); 
-  formData.append('is_main', productImages.length === 0 ? 'true' : 'false');
-  formData.append('display_order', String(productImages.length));
+    const formData = new FormData();
+    formData.append('image', file); // Backend 'image' bekliyor
+    formData.append('is_main', productImages.length === 0 ? 'true' : 'false');
+    formData.append('display_order', String(productImages.length));
 
-  try {
-    setImageUploadLoading(true);
-    // headers eklemek zorunlu olmayabilir ama manuel eklemek hatayı çözer
-    const res = await api.post(`/admin/add-product-image/${selectedProductForImages.id}`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    });
-
-    toast.success('🖼️ Resim başarıyla eklendi!');
-    fetchProductImages(selectedProductForImages.id);
-  } catch (err) {
-    console.error("🔴 Yükleme Hatası:", err.response?.data);
-    toast.error(err.response?.data?.error || "Resim yüklenemedi");
-  } finally {
-    setImageUploadLoading(false);
-    e.target.value = ''; // Seçilen dosyayı temizle
-  }
+    try {
+        setImageUploadLoading(true);
+        // Header'ı boş bırakın veya Content-Type eklemeyin, Axios otomatik halleder
+await api.post(`/admin/add-product-image/${selectedProductForImages.id}`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+});
+        toast.success('🖼️ Resim başarıyla eklendi!');
+        fetchProductImages(selectedProductForImages.id);
+    } catch (err) {
+        console.error("Yükleme Hatası Detayı:", err.response?.data);
+        toast.error(err.response?.data?.error || "Resim yüklenemedi");
+    } finally {
+        setImageUploadLoading(false);
+        e.target.value = '';
+    }
 };
 
   const deleteProductImage = async (imageId) => {

@@ -107,23 +107,28 @@ if (price) {
         }
         
         const query = `
-            INSERT INTO products 
-            (name, category, price, description, stock_quantity, image_url, discount, is_new, free_shipping, details) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `;
-        const [result] = await db.execute(query, [
-            name, category, cleanPrice, description || '', stock_quantity || 0, 
-            image_url, discount || 0, is_new === 'true' ? 1 : 0, 
-            free_shipping === 'true' ? 1 : 0,
-            details || ''
-        ]);
+    INSERT INTO products 
+    (name, category, price, description, stock_quantity, image_url, discount, is_new, free_shipping, details) 
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+`;
+const [result] = await db.execute(query, [
+    name, category, cleanPrice, description || '', stock_quantity || 0, 
+    image_url, discount || 0, is_new === 'true' ? 1 : 0, 
+    free_shipping === 'true' ? 1 : 0,
+    details || ''
+]);
         
         if (image_url) {
-            await db.execute(
-                'INSERT INTO product_images (product_id, image_url, is_main, display_order) VALUES (?, ?, ?, ?)',
-                [result.insertId, image_url, true, 0]
-            );
-        }
+    // Hem ana tabloyu hem de resimler tablosunu güncellediğinden emin oluyoruz
+    await db.execute(
+        'UPDATE products SET image_url = ? WHERE id = ?',
+        [image_url, result.insertId]
+    );
+    await db.execute(
+        'INSERT INTO product_images (product_id, image_url, is_main, display_order) VALUES (?, ?, ?, ?)',
+        [result.insertId, image_url, 1, 0]
+    );
+}
         
         res.status(201).json({ message: "Ürün eklendi", productId: result.insertId });
     } catch (err) {
