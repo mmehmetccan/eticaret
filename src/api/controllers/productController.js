@@ -190,28 +190,33 @@ const deleteProduct = async (req, res) => {
 };
 
 const addProductImage = async (req, res) => {
-    const { productId } = req.params;
-    const image_url = req.file ? `/uploads/${req.file.filename}` : null;
-    const { is_main, display_order } = req.body;
-    
-    if (!image_url) {
-        return res.status(400).json({ error: "Resim yüklenemedi." });
-    }
-    
     try {
-        if (is_main === 'true') {
+        const { productId } = req.params;
+        console.log("📸 Gelen Dosya:", req.file); // Sunucu terminalinde (docker logs) bunu kontrol et
+
+        if (!req.file) {
+            return res.status(400).json({ error: "Resim dosyası sunucuya ulaşmadı." });
+        }
+
+        const image_url = `/uploads/${req.file.filename}`;
+        const { is_main, display_order } = req.body;
+
+        // Veri tipi kontrolü (is_main string olarak gelebilir)
+        const isMainBool = is_main === 'true' || is_main === true || is_main === 1;
+
+        if (isMainBool) {
             await db.execute('UPDATE product_images SET is_main = FALSE WHERE product_id = ?', [productId]);
         }
-        
+
         await db.execute(
             'INSERT INTO product_images (product_id, image_url, is_main, display_order) VALUES (?, ?, ?, ?)',
-            [productId, image_url, is_main === 'true', display_order || 0]
+            [productId, image_url, isMainBool, display_order || 0]
         );
-        
-        res.json({ message: "Resim eklendi." });
+
+        res.json({ message: "Resim başarıyla eklendi.", image_url });
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: "Resim eklenemedi." });
+        console.error("Resim kayıt hatası:", err);
+        res.status(500).json({ error: "Veritabanı kayıt hatası." });
     }
 };
 

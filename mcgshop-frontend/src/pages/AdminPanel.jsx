@@ -374,27 +374,29 @@ const handleImageUpload = async (e) => {
   const file = e.target.files[0];
   if (!file) return;
 
-  console.log("📤 Yüklenmeye hazırlanan dosya:", file.name);
-
   const formData = new FormData();
-  // 'image' anahtarının backend/multer ile aynı olduğundan emin oluyoruz
+  // 'image' isminin Multer'daki isimle (upload.single('image')) aynı olduğundan emin ol
   formData.append('image', file); 
-  formData.append('is_main', String(productImages.length === 0));
+  formData.append('is_main', productImages.length === 0 ? 'true' : 'false');
   formData.append('display_order', String(productImages.length));
 
   try {
     setImageUploadLoading(true);
-    // İsteği gönderirken headers eklemeyi unutmayın
-    await api.post(`/admin/add-product-image/${selectedProductForImages.id}`, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' }
+    // headers eklemek zorunlu olmayabilir ama manuel eklemek hatayı çözer
+    const res = await api.post(`/admin/add-product-image/${selectedProductForImages.id}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
     });
+
     toast.success('🖼️ Resim başarıyla eklendi!');
     fetchProductImages(selectedProductForImages.id);
   } catch (err) {
-    toast.error("Hata: " + (err.response?.data?.error || "Resim yüklenemedi"));
+    console.error("🔴 Yükleme Hatası:", err.response?.data);
+    toast.error(err.response?.data?.error || "Resim yüklenemedi");
   } finally {
     setImageUploadLoading(false);
-    e.target.value = ''; // Inputu sıfırla
+    e.target.value = ''; // Seçilen dosyayı temizle
   }
 };
 
