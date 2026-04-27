@@ -43,6 +43,8 @@ app.use(express.urlencoded({ extended: true }));
 
 // Uploads klasörü (resimler için)
 app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
+// Frontend Build Dosyalarını Servis Et
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Rotaları Kullan
 app.use('/api/users', userRoutes);
@@ -53,10 +55,15 @@ app.use('/api/products', productRoutes);
 app.use('/api/reviews', reviewRoutes);
 
 // 404 handler
-app.use((req, res) => {
-    res.status(404).json({ error: 'API endpoint bulunamadı' });
+// API dışındaki tüm istekleri frontend'e (index.html) yönlendir
+app.get('*', (req, res) => {
+    // Eğer istek /api ile başlıyorsa ama bulunamadıysa 404 döndür
+    if (req.path.startsWith('/api')) {
+        return res.status(404).json({ error: 'API endpoint bulunamadı' });
+    }
+    // Geri kalan her şey için index.html gönder
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
-
 // Global hata yakalayıcı
 app.use((err, req, res, next) => {
     console.error('❌ Hata:', err.message);
