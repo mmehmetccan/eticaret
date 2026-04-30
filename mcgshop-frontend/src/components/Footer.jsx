@@ -13,15 +13,20 @@ const Footer = () => {
       <div className="footer-container">
         {/* Logo ve Açıklama */}
         <div className="footer-section">
-          <div className="footer-logo">
-            <ShoppingBag size={28} color="#667eea" />
-            <span>MCG<span className="footer-logo-highlight">Shop</span></span>
-          </div>
-          <p className="footer-description">
-            Türkiye'nin önde gelen online alışveriş platformu. 
-            Binlerce ürün, uygun fiyatlar ve hızlı kargo ile 
-            alışveriş keyfini yaşayın.
-          </p>
+  <div className="footer-logo">
+    <div className="footer-logo-icon">
+      <span>US</span>
+    </div>
+    <div className="footer-logo-text-group">
+      <span className="footer-logo-text">KOZMETİK</span>
+      <span className="footer-logo-sub">& PARFÜM</span>
+    </div>
+  </div>
+  <p className="footer-description">
+    US Kozmetik & Parfüm olarak, kaliteli ve orijinal kozmetik ürünleri ile 
+    güzelliğinizi ön plana çıkarıyoruz. En iyi parfüm ve kozmetik ürünleri 
+    uygun fiyatlarla sizlerle.
+  </p>
           <div className="footer-social">
             <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="social-link">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
@@ -73,19 +78,19 @@ const Footer = () => {
 
         {/* İletişim */}
         <div className="footer-section">
-          <h3 className="footer-title">İletişim</h3>
-          <div className="footer-contact">
-            <div className="contact-item">
-              <MapPin size={16} />
-              <span>İstanbul, Türkiye</span>
-            </div>
-            <div className="contact-item">
-              <Phone size={16} />
-              <span>+90 555 123 45 67</span>
-            </div>
-            <div className="contact-item">
-              <Mail size={16} />
-              <span>info@mcgshop.com</span>
+  <h3 className="footer-title">İletişim</h3>
+  <div className="footer-contact">
+    <div className="contact-item">
+      <MapPin size={16} />
+      <span>İstanbul, Türkiye</span>
+    </div>
+    <div className="contact-item">
+      <Phone size={16} />
+      <span>+90 555 123 45 67</span>
+    </div>
+    <div className="contact-item">
+      <Mail size={16} />
+      <span>info@uskozmetik.com</span>
             </div>
           </div>
         </div>
@@ -117,10 +122,8 @@ const Footer = () => {
       {/* Copyright */}
       <div className="footer-bottom">
         <div className="footer-bottom-container">
-          <p>&copy; {currentYear} MCGShop. Tüm hakları saklıdır.</p>
-          <p className="footer-made-with">
-            Made with <Heart size={14} fill="#ef4444" color="#ef4444" /> by MCG Team
-          </p>
+          <p>&copy; {currentYear} US Kozmetik. Tüm hakları saklıdır.</p>
+          
         </div>
       </div>
     </footer>

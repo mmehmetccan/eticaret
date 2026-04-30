@@ -4,8 +4,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import api from '../api/api';
 import { toast } from 'react-toastify';
 import { formatPrice, formatDiscountedPrice, getImageUrl } from '../utils/formatPrice';
-
-import { ShoppingCart, Heart, AlertCircle, Star, Truck, Filter, ChevronDown } from 'lucide-react';
+import { ShoppingCart, Heart, Truck, ChevronDown } from 'lucide-react';
 import '../styles/CategoryPage.css';
 
 const CategoryPage = () => {
@@ -19,75 +18,98 @@ const CategoryPage = () => {
   const [showSortDropdown, setShowSortDropdown] = useState(false);
   const user = JSON.parse(localStorage.getItem('user') || 'null');
 
-  // Kategori isimleri
+  // Kategori isimleri (URL'den gelen -> Görünen isim)
   const categoryNames = {
-    kadin: 'Kadın',
-    erkek: 'Erkek',
-    cocuk: 'Çocuk',
-    elektronik: 'Elektronik',
-    'ev-yasam': 'Ev & Yaşam',
-    kozmetik: 'Kozmetik',
-    spor: 'Spor & Outdoor',
-    kitap: 'Kitap & Kırtasiye'
-  };
-
-  // Alt kategori isimleri
-  const subCategoryNames = {
-    giyim: 'Giyim',
-    elbise: 'Elbise',
-    tisort: 'Tişört',
-    gomlek: 'Gömlek',
-    'kot-pantolon': 'Kot Pantolon',
-    'kot-ceket': 'Kot Ceket',
-    ayakkabi: 'Ayakkabı',
-    canta: 'Çanta',
-    aksesuar: 'Aksesuar',
-    pantolon: 'Pantolon',
-    ceket: 'Ceket',
-    saat: 'Saat',
-    cuzdan: 'Cüzdan',
-    'kiz-cocuk': 'Kız Çocuk',
-    'erkek-cocuk': 'Erkek Çocuk',
-    bebek: 'Bebek',
-    oyuncak: 'Oyuncak',
-    'okul-kiyafetleri': 'Okul Kıyafetleri',
-    telefon: 'Telefon',
-    bilgisayar: 'Bilgisayar',
-    tablet: 'Tablet',
-    kulaklik: 'Kulaklık',
-    'akilli-saat': 'Akıllı Saat',
-    'oyun-konsolu': 'Oyun Konsolu',
-    mobilya: 'Mobilya',
-    dekorasyon: 'Dekorasyon',
-    mutfak: 'Mutfak',
-    banyo: 'Banyo',
-    'yatak-odasi': 'Yatak Odası',
-    bahce: 'Bahçe',
     parfum: 'Parfüm',
     makyaj: 'Makyaj',
     'cilt-bakim': 'Cilt Bakım',
-    'sac-bakim': 'Saç Bakımı',
-    'kisisel-bakim': 'Kişisel Bakım',
-    'spor-ayakkabi': 'Spor Ayakkabı',
-    'spor-giyim': 'Spor Giyim',
-    fitness: 'Fitness',
-    kamp: 'Kamp & Doğa',
-    bisiklet: 'Bisiklet',
-    yuzme: 'Yüzme',
-    roman: 'Roman',
-    'kisisel-gelisim': 'Kişisel Gelişim',
-    cocuk: 'Çocuk Kitapları',
-    kirtasiye: 'Kırtasiye',
-    defter: 'Defter'
+    'sac-bakim': 'Saç Bakım',
+    'vucut-bakim': 'Vücut Bakım',
+    'erkek-bakim': 'Erkek Bakım',
+    aksesuar: 'Aksesuar'
   };
 
-  // Sıralama seçenekleri
+  // Alt kategori isimleri - ÜRÜN ADI veya KATEGORİ içinde aranacak
+  const subCategorySearchTerms = {
+    kadin: ['Kadın', 'Kadın Parfüm', 'Kadın Parfümü'],
+    erkek: ['Erkek', 'Erkek Parfüm', 'Erkek Parfümü'],
+    uniseks: ['Uniseks', 'Unisex'],
+    setleri: ['Set', 'Hediye Seti', 'Setleri'],
+    mini: ['Mini', 'Seyahat', 'Mini Boy'],
+    arap: ['Arap', 'Doğu', 'Oud', 'Arap Parfümü'],
+    nis: ['Niş', 'Niche', 'Niş Parfüm'],
+    ruj: ['Ruj', 'Likit Ruj', 'Mat Ruj', 'Rujlar'],
+    fondoten: ['Fondöten', 'Fondoten', 'BB Cream'],
+    allik: ['Allık', 'Blush'],
+    far: ['Far', 'Göz Farı', 'Eyeshadow'],
+    maskara: ['Maskara', 'Mascara'],
+    pudra: ['Pudra', 'Transparan Pudra', 'Fix Pudra'],
+    aydinlatici: ['Aydınlatıcı', 'Highlighter', 'Kontür'],
+    setleri: ['Set', 'Makyaj Seti'],
+    fircalar: ['Fırça', 'Makyaj Fırçası'],
+    temizleyici: ['Temizleyici', 'Yüz temizleme', 'Cleanser'],
+    nemlendirici: ['Nemlendirici', 'Moisturizer', 'Krem'],
+    'gunes-kremi': ['Güneş Kremi', 'SPF', 'Sunscreen'],
+    serum: ['Serum', 'Cilt Serumu'],
+    maske: ['Maske', 'Yüz Maskesi', 'Sheet Mask'],
+    tonik: ['Tonik', 'Toner'],
+    peeling: ['Peeling', 'Eksfoliyant'],
+    goz: ['Göz Bakım', 'Göz Kremi'],
+    sampuan: ['Şampuan', 'Şampuan', 'Shampoo'],
+    krem: ['Saç Kremi', 'Kondisyoner', 'Conditioner'],
+    yag: ['Saç Yağı', 'Argan Yağı', 'Hindistan Cevizi Yağı'],
+    sprey: ['Saç Spreyi', 'Hair Spray'],
+    boya: ['Saç Boyası', 'Hair Color'],
+    kepek: ['Kepek Şampuan', 'Anti Kepek'],
+    dokulme: ['Dökülme Karşıtı', 'Saç Dökülmesi'],
+    'duş-jeli': ['Duş Jeli', 'Vücut Yıkama'],
+    losyon: ['Vücut Losyonu', 'Body Lotion'],
+    'el-ayak': ['El Kremi', 'Ayak Bakım'],
+    deodorant: ['Deodorant', 'Roll On', 'Spray'],
+    tras: ['Tıraş', 'Tıraş Köpüğü', 'Tıraş Jeli'],
+    sakal: ['Sakal', 'Sakal Yağı', 'Sakal Kremi'],
+    'makyaj-cantasi': ['Makyaj Çantası', 'Kozmetik Çantası'],
+    ayna: ['Ayna', 'Makyaj Aynası'],
+    pamuk: ['Pamuk', 'Sünger', 'Makyaj Süngeri'],
+    fircalik: ['Fırçalık', 'Fırça Seti'],
+    seyahat: ['Seyahat Seti', 'Seyahat Boy']
+  };
+
+  const getCategoryName = () => {
+    if (subCategoryId) {
+      const mainCat = categoryNames[categoryId] || categoryId;
+      const subName = getSubCategoryDisplayName();
+      return `${mainCat} / ${subName}`;
+    }
+    return categoryNames[categoryId] || categoryId;
+  };
+
+  const getSubCategoryDisplayName = () => {
+    const subNames = {
+      kadin: 'Kadın', erkek: 'Erkek', uniseks: 'Uniseks',
+      setleri: 'Setler', mini: 'Mini Boy', arap: 'Arap Parfümleri',
+      nis: 'Niş Parfümler', ruj: 'Ruj', fondoten: 'Fondöten',
+      allik: 'Allık', far: 'Far', maskara: 'Maskara',
+      pudra: 'Pudra', aydinlatici: 'Aydınlatıcı & Kontür',
+      fircalar: 'Fırçalar', temizleyici: 'Temizleyiciler',
+      nemlendirici: 'Nemlendiriciler', 'gunes-kremi': 'Güneş Kremleri',
+      serum: 'Serumlar', maske: 'Maskeler', tonik: 'Tonikler',
+      peeling: 'Peeling', goz: 'Göz Bakımı', sampuan: 'Şampuan',
+      krem: 'Saç Kremi', yag: 'Saç Yağları', sprey: 'Saç Spreyleri',
+      boya: 'Saç Boyası', kepek: 'Kepek Şampuan', dokulme: 'Dökülme Karşıtı',
+      'duş-jeli': 'Duş Jeli', losyon: 'Vücut Losyonu', 'el-ayak': 'El & Ayak Bakım',
+      deodorant: 'Deodorant', tras: 'Tıraş Ürünleri', sakal: 'Sakal Bakımı',
+      'makyaj-cantasi': 'Makyaj Çantası', ayna: 'Aynalar',
+      pamuk: 'Pamuk & Sünger', fircalik: 'Fırçalık', seyahat: 'Seyahat Setleri'
+    };
+    return subNames[subCategoryId] || subCategoryId;
+  };
+
   const sortOptions = [
     { value: 'default', label: 'Önerilen', icon: '✨' },
     { value: 'bestseller', label: 'En Çok Satanlar', icon: '🏆' },
     { value: 'price_asc', label: 'Fiyata Göre Artan', icon: '📈' },
     { value: 'price_desc', label: 'Fiyata Göre Azalan', icon: '📉' },
-    { value: 'rating', label: 'En Yüksek Puanlılar', icon: '⭐' },
     { value: 'newest', label: 'En Yeniler', icon: '🆕' },
     { value: 'discount', label: 'En Çok İndirim', icon: '🔥' }
   ];
@@ -111,39 +133,43 @@ const CategoryPage = () => {
       const res = await api.get('/products');
       let filtered = res.data;
 
-      // Ana kategoriye göre filtrele
+      // Ana kategoriye göre filtrele (category alanından)
       if (categoryId) {
         let categoryTurkish = '';
         switch(categoryId) {
-          case 'kadin': categoryTurkish = 'Kadın'; break;
-          case 'erkek': categoryTurkish = 'Erkek'; break;
-          case 'cocuk': categoryTurkish = 'Çocuk'; break;
-          case 'elektronik': categoryTurkish = 'Elektronik'; break;
-          case 'ev-yasam': categoryTurkish = 'Ev & Yaşam'; break;
-          case 'kozmetik': categoryTurkish = 'Kozmetik'; break;
-          case 'spor': categoryTurkish = 'Spor'; break;
-          case 'kitap': categoryTurkish = 'Kitap'; break;
+          case 'parfum': categoryTurkish = 'Parfüm'; break;
+          case 'makyaj': categoryTurkish = 'Makyaj'; break;
+          case 'cilt-bakim': categoryTurkish = 'Cilt Bakım'; break;
+          case 'sac-bakim': categoryTurkish = 'Saç Bakım'; break;
+          case 'vucut-bakim': categoryTurkish = 'Vücut Bakım'; break;
+          case 'erkek-bakim': categoryTurkish = 'Erkek Bakım'; break;
+          case 'aksesuar': categoryTurkish = 'Aksesuar'; break;
           default: categoryTurkish = '';
         }
         
         filtered = filtered.filter(product => 
           product.category?.toLowerCase() === categoryTurkish.toLowerCase()
         );
-        
-        setCategoryName(categoryNames[categoryId] || categoryId);
       }
 
       // Alt kategoriye göre filtrele (ürün adında veya açıklamada ara)
       if (subCategoryId) {
-        const subName = subCategoryNames[subCategoryId] || subCategoryId;
-        filtered = filtered.filter(product =>
-          product.name?.toLowerCase().includes(subName.toLowerCase()) ||
-          product.description?.toLowerCase().includes(subName.toLowerCase())
-        );
-        setCategoryName(`${categoryNames[categoryId]} / ${subName}`);
+        const searchTerms = subCategorySearchTerms[subCategoryId] || [subCategoryId];
+        filtered = filtered.filter(product => {
+          const productName = (product.name || '').toLowerCase();
+          const productDesc = (product.description || '').toLowerCase();
+          const productCategory = (product.category || '').toLowerCase();
+          
+          return searchTerms.some(term => 
+            productName.includes(term.toLowerCase()) ||
+            productDesc.includes(term.toLowerCase()) ||
+            productCategory.includes(term.toLowerCase())
+          );
+        });
       }
 
       setProducts(filtered);
+      setCategoryName(getCategoryName());
     } catch (err) {
       console.error("Ürünler yüklenemedi:", err);
     } finally {
@@ -163,9 +189,6 @@ const CategoryPage = () => {
         break;
       case 'price_desc':
         sorted.sort((a, b) => b.price - a.price);
-        break;
-      case 'rating':
-        sorted.sort((a, b) => (b.avg_rating || 0) - (a.avg_rating || 0));
         break;
       case 'newest':
         sorted.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
@@ -229,17 +252,6 @@ const CategoryPage = () => {
     }
   };
 
-  const getRatingValue = (rating) => {
-    const num = parseFloat(rating);
-    return isNaN(num) ? 0 : num;
-  };
-
-  const formatNumber = (num) => {
-    if (!num) return '0';
-    if (num >= 1000) return (num / 1000).toFixed(1) + 'B';
-    return num.toString();
-  };
-
   const getDiscountedPrice = (price, discount) => {
     if (!discount || discount === 0) return null;
     return price - (price * discount / 100);
@@ -257,13 +269,11 @@ const CategoryPage = () => {
 
   return (
     <div className="category-page">
-      {/* Header */}
       <div className="category-header">
         <h1 className="category-title">{categoryName}</h1>
         <p className="category-count">{filteredProducts.length} ürün bulundu</p>
       </div>
 
-      {/* Sıralama Dropdown */}
       <div className="category-sort-bar">
         <div className="sort-dropdown-container">
           <button 
@@ -294,7 +304,6 @@ const CategoryPage = () => {
         </div>
       </div>
 
-      {/* Ürünler Grid */}
       {filteredProducts.length === 0 ? (
         <div className="no-products">
           <p>Bu kategoride henüz ürün bulunmuyor.</p>
@@ -306,23 +315,17 @@ const CategoryPage = () => {
             const isOutOfStock = product.stock_quantity <= 0;
             const hasDiscount = product.discount > 0;
             const discountedPrice = getDiscountedPrice(product.price, product.discount);
-            const avgRating = getRatingValue(product.avg_rating || product.rating);
             const isFavorite = product.isFavorite || false;
 
             return (
               <Link key={product.id} to={`/product/${product.id}`} className="category-product-card">
-                {/* Rozetler - SOL ÜST */}
                 <div className="cat-badges-top-left">
                   {hasDiscount && !isOutOfStock && (
                     <div className="cat-discount-badge">-%{product.discount}</div>
                   )}
-                  
-                  {/* SADECE is_new === true/1 ise göster */}
                   {(product.is_new === 1 || product.is_new === true) && !isOutOfStock && !hasDiscount && (
                     <div className="cat-new-badge">Yeni</div>
                   )}
-                  
-                  {/* SADECE free_shipping === true/1 ise göster */}
                   {(product.free_shipping === 1 || product.free_shipping === true) && !isOutOfStock && (
                     <div className="cat-cargo-badge-top">
                       <Truck size={12} /> Kargo Bedava
@@ -330,7 +333,6 @@ const CategoryPage = () => {
                   )}
                 </div>
 
-                {/* Favori Butonu - SAĞ ÜST */}
                 <button 
                   className={`cat-favorite-btn ${isFavorite ? 'favorite-active' : ''}`}
                   onClick={(e) => toggleFavorite(product.id, e)}
@@ -338,7 +340,6 @@ const CategoryPage = () => {
                   <Heart size={18} fill={isFavorite ? "white" : "none"} />
                 </button>
 
-                {/* Resim */}
                 <div className="cat-product-image-wrapper">
                   <img 
                     src={getImageUrl(product.image_url)} 
@@ -352,7 +353,6 @@ const CategoryPage = () => {
                   )}
                 </div>
 
-                {/* Bilgiler */}
                 <div className="cat-product-info">
                   <div className="cat-product-prices">
                     {hasDiscount && !isOutOfStock ? (
@@ -366,13 +366,6 @@ const CategoryPage = () => {
                   </div>
 
                   <h3 className="cat-product-name">{product.name}</h3>
-
-                  <div className="cat-product-stats">
-                    <div className="cat-product-rating">
-                      <Star size={14} fill="#f59e0b" color="#f59e0b" />
-                      <span className="cat-rating-value">{avgRating.toFixed(1)}</span>
-                    </div>
-                  </div>
 
                   <button 
                     className="cat-add-to-cart-btn"
@@ -415,7 +408,7 @@ const CategoryPage = () => {
         }
 
         .sort-dropdown-btn:hover {
-          border-color: #667eea;
+          border-color: #e11d48;
           background: #f8fafc;
         }
 
@@ -462,8 +455,8 @@ const CategoryPage = () => {
         }
 
         .sort-option.active {
-          background: #eef2ff;
-          color: #4f46e5;
+          background: #fef2f2;
+          color: #e11d48;
         }
 
         .sort-option-icon {
@@ -472,11 +465,10 @@ const CategoryPage = () => {
 
         .sort-option-check {
           margin-left: auto;
-          color: #4f46e5;
+          color: #e11d48;
           font-weight: 700;
         }
 
-        /* SOL ÜST ROZETLER KONTEYNERİ */
         .cat-badges-top-left {
           position: absolute;
           top: 12px;
@@ -487,7 +479,6 @@ const CategoryPage = () => {
           z-index: 10;
         }
 
-        /* İNDİRİM ROZETİ */
         .cat-discount-badge {
           background: linear-gradient(135deg, #ef4444, #dc2626);
           color: white;
@@ -499,7 +490,6 @@ const CategoryPage = () => {
           box-shadow: 0 2px 8px rgba(0,0,0,0.15);
         }
 
-        /* YENİ ÜRÜN ROZETİ */
         .cat-new-badge {
           background: linear-gradient(135deg, #10b981, #059669);
           color: white;
@@ -511,7 +501,6 @@ const CategoryPage = () => {
           box-shadow: 0 2px 8px rgba(0,0,0,0.15);
         }
 
-        /* KARGO BEDAVA ROZETİ */
         .cat-cargo-badge-top {
           background: linear-gradient(135deg, #f59e0b, #d97706);
           color: white;
@@ -524,6 +513,180 @@ const CategoryPage = () => {
           gap: 6px;
           width: fit-content;
           box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .cat-favorite-btn {
+          position: absolute;
+          top: 12px;
+          right: 12px;
+          background: white;
+          border: none;
+          border-radius: 50%;
+          width: 34px;
+          height: 34px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          z-index: 5;
+          box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .favorite-active {
+          background: #e11d48;
+          color: white;
+        }
+
+        .cat-product-image-wrapper {
+          position: relative;
+          height: 280px;
+          background: #f8fafc;
+          overflow: hidden;
+        }
+
+        .cat-product-image {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          transition: transform 0.3s;
+        }
+
+        .category-product-card:hover .cat-product-image {
+          transform: scale(1.05);
+        }
+
+        .cat-outstock-overlay {
+          position: absolute;
+          inset: 0;
+          background: rgba(0,0,0,0.5);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 2;
+        }
+
+        .cat-outstock-text {
+          background: white;
+          padding: 6px 16px;
+          border-radius: 30px;
+          font-weight: 800;
+          font-size: 12px;
+        }
+
+        .cat-product-info {
+          padding: 15px;
+        }
+
+        .cat-product-prices {
+          display: flex;
+          align-items: baseline;
+          gap: 8px;
+          margin-bottom: 8px;
+        }
+
+        .cat-price-original {
+          font-size: 13px;
+          color: #94a3b8;
+          text-decoration: line-through;
+        }
+
+        .cat-price-discount {
+          font-size: 20px;
+          font-weight: 900;
+          color: #ef4444;
+        }
+
+        .cat-price-current {
+          font-size: 20px;
+          font-weight: 900;
+          color: #1e293b;
+        }
+
+        .cat-product-name {
+          font-size: 15px;
+          font-weight: 700;
+          color: #1e293b;
+          margin-bottom: 12px;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+          min-height: 42px;
+        }
+
+        .cat-add-to-cart-btn {
+          width: 100%;
+          background: #1e293b;
+          color: white;
+          padding: 12px;
+          border-radius: 14px;
+          font-weight: 700;
+          font-size: 14px;
+          cursor: pointer;
+          border: none;
+          margin-top: 8px;
+          transition: background 0.3s;
+        }
+
+        .cat-add-to-cart-btn:hover:not(:disabled) {
+          background: #e11d48;
+        }
+
+        .cat-add-to-cart-btn:disabled {
+          background: #cbd5e1;
+          cursor: not-allowed;
+        }
+
+        .no-products {
+          text-align: center;
+          padding: 80px 20px;
+          background: white;
+          border-radius: 32px;
+        }
+
+        .back-home-btn {
+          background: linear-gradient(135deg, #e11d48, #be123c);
+          color: white;
+          padding: 12px 32px;
+          border-radius: 40px;
+          font-weight: 700;
+          border: none;
+          cursor: pointer;
+          display: inline-block;
+          text-decoration: none;
+        }
+
+        .loading-container {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          min-height: 400px;
+        }
+
+        .loading-spinner {
+          width: 50px;
+          height: 50px;
+          border: 4px solid #e2e8f0;
+          border-top-color: #e11d48;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+          .category-products-grid {
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 15px;
+          }
+          .cat-product-image-wrapper {
+            height: 240px;
+          }
+          .category-title {
+            font-size: 24px;
+          }
         }
       `}</style>
     </div>

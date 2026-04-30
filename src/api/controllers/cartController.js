@@ -3,13 +3,22 @@ const db = require('../../config/db');
 const getCart = async (req, res) => {
     try {
         const query = `
-            SELECT c.*, p.name, p.price, p.image_url 
+            SELECT 
+                c.*, 
+                p.name, 
+                p.price, 
+                COALESCE(
+                    (SELECT image_url FROM product_images WHERE product_id = p.id AND is_main = 1 LIMIT 1),
+                    p.image_url
+                ) as image_url
             FROM cart_items c 
             JOIN products p ON c.product_id = p.id 
             WHERE c.user_id = ?`;
+            
         const [rows] = await db.execute(query, [req.user.id]);
         res.json(rows);
     } catch (err) {
+        console.error("Sepet getirme hatası:", err);
         res.status(500).json({ error: "Sepet getirilemedi." });
     }
 };

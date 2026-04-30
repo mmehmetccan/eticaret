@@ -3,7 +3,7 @@ import api from '../api/api';
 import { 
   LayoutDashboard, Package, ShoppingCart, Users, Plus, Trash2, Edit3, 
   TrendingUp, ArrowLeftRight, X, Clock, Save, Image, Percent, Truck, Sparkles, 
-  ChevronDown, Search, Filter, SlidersHorizontal
+  ChevronDown, Search, Filter, SlidersHorizontal, Tags
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -49,6 +49,13 @@ const AdminPanel = () => {
     notes: ''
   });
   
+  // Kategori Yönetimi - BACKEND'DEN GELEN
+  const [categories, setCategories] = useState([]);
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [editingCategory, setEditingCategory] = useState(null);
+  const [categoryForm, setCategoryForm] = useState({ name: '', icon: '📦', active: true });
+  const [categorySearch, setCategorySearch] = useState('');
+  
   // Filtreleme State'leri
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -56,22 +63,6 @@ const AdminPanel = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [priceRange, setPriceRange] = useState({ min: '', max: '' });
   const [stockFilter, setStockFilter] = useState('all');
-
-  const categories = [
-    { value: 'all', label: 'Tüm Kategoriler' },
-    { value: 'Kadın', label: '👗 Kadın' },
-    { value: 'Erkek', label: '👔 Erkek' },
-    { value: 'Çocuk', label: '🧸 Çocuk' },
-    { value: 'Elektronik', label: '📱 Elektronik' },
-    { value: 'Ev & Yaşam', label: '🏠 Ev & Yaşam' },
-    { value: 'Kozmetik', label: '💄 Kozmetik' },
-    { value: 'Spor', label: '⚽ Spor' },
-    { value: 'Kitap', label: '📚 Kitap' },
-    { value: 'Aksesuar', label: '💍 Aksesuar' },
-    { value: 'Ayakkabı', label: '👟 Ayakkabı' },
-    { value: 'Çanta', label: '👜 Çanta' },
-    { value: 'Saat', label: '⌚ Saat' }
-  ];
 
   const sortOptions = [
     { value: 'default', label: 'Varsayılan (ID)' },
@@ -101,8 +92,90 @@ const AdminPanel = () => {
 
   const navigate = useNavigate();
 
+  // Filtrelenmiş kategoriler
+  const filteredCategories = categories.filter(cat =>
+    cat.name.toLowerCase().includes(categorySearch.toLowerCase())
+  );
+
+  // ========== KATEGORİ CRUD FONKSİYONLARI (Backend ile senkronize) ==========
+  
+  // Kategorileri backend'den çek
+  const fetchCategories = async () => {
+    try {
+      const res = await api.get('/categories');
+      setCategories(res.data);
+    } catch (err) {
+      console.error("Kategoriler yüklenemedi:", err);
+      toast.error("Kategoriler yüklenemedi!");
+    }
+  };
+
+  // Yeni kategori ekle (backend'e ve state'e)
+  const handleCategorySubmit = async () => {
+    if (!categoryForm.name.trim()) {
+      toast.error('Kategori adı gerekli');
+      return;
+    }
+    
+    try {
+      if (editingCategory) {
+        // Güncelleme
+        await api.put(`/admin/categories/${editingCategory.id}`, {
+          name: categoryForm.name,
+          icon: categoryForm.icon,
+          active: categoryForm.active
+        });
+        toast.success('Kategori güncellendi');
+      } else {
+        // Yeni ekleme
+        const res = await api.post('/admin/categories', {
+          name: categoryForm.name,
+          icon: categoryForm.icon,
+          active: categoryForm.active
+        });
+        toast.success('Yeni kategori eklendi');
+      }
+      
+      // Kategorileri yeniden çek (state güncellenir)
+      await fetchCategories();
+      
+      setShowCategoryModal(false);
+      setEditingCategory(null);
+      setCategoryForm({ name: '', icon: '📦', active: true });
+    } catch (err) {
+      toast.error("İşlem başarısız: " + (err.response?.data?.error || "Hata oluştu"));
+    }
+  };
+
+  // Kategori sil
+  const deleteCategory = async (id) => {
+    if (!window.confirm('Bu kategoriyi silmek istediğinize emin misiniz? Ürünler etkilenmez.')) return;
+    
+    try {
+      await api.delete(`/admin/categories/${id}`);
+      toast.info('Kategori silindi');
+      await fetchCategories(); // Kategorileri yeniden çek
+    } catch (err) {
+      toast.error("Silme başarısız: " + (err.response?.data?.error || "Hata oluştu"));
+    }
+  };
+
+  // Kategori düzenleme modalını aç
+  const openCategoryEditModal = (category) => {
+    setEditingCategory(category);
+    setCategoryForm({
+      name: category.name,
+      icon: category.icon || '📦',
+      active: category.active === 1 || category.active === true
+    });
+    setShowCategoryModal(true);
+  };
+
+  // ========== DİĞER FONKSİYONLAR ==========
+
   useEffect(() => {
     fetchAdminData();
+    fetchCategories(); // Kategorileri backend'den çek
   }, []);
 
   useEffect(() => {
@@ -241,16 +314,17 @@ const AdminPanel = () => {
 
     try {
       setImageUploadLoading(true);
-const res = await api.post('/admin/upload-image', formData, {
-    headers: { 'Content-Type': 'multipart/form-data' }
-});      const imageUrl = getImageUrl(res.data.image_url);
+      const res = await api.post('/admin/upload-image', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      const imageUrl = getImageUrl(res.data.image_url);
       
       setProductForm(prev => ({
         ...prev,
         details: prev.details + (prev.details ? '\n' : '') + `<img src="${imageUrl}" alt="detay-resim" style="max-width:100%; margin:15px 0; border-radius:12px;" />`
       }));
     } catch (err) {
-      alert("Resim yüklenemedi!");
+      toast.error("Resim yüklenemedi!");
     } finally {
       setImageUploadLoading(false);
       e.target.value = '';
@@ -295,26 +369,24 @@ const res = await api.post('/admin/upload-image', formData, {
   };
 
   const openEditModal = (product) => {
-  setEditMode(true);
-  
-  // getRawPrice kullanarak "500.00" değerini "500" olarak alıyoruz
-  const cleanPriceValue = getRawPrice(product.price);
+    setEditMode(true);
+    const cleanPriceValue = getRawPrice(product.price);
 
-  setProductForm({ 
-    id: product.id,
-    name: product.name || '', 
-    category: product.category || '', 
-    price: cleanPriceValue, // Burası artık "500" olacak
-    description: product.description || '', 
-    details: product.details || '',
-    stock_quantity: product.stock_quantity || '',
-    discount: product.discount || 0,
-    is_new: product.is_new === 1 || product.is_new === true,
-    free_shipping: product.free_shipping === 1 || product.free_shipping === true,
-    image: null 
-  });
-  setShowModal(true);
-};
+    setProductForm({ 
+      id: product.id,
+      name: product.name || '', 
+      category: product.category || '', 
+      price: cleanPriceValue,
+      description: product.description || '', 
+      details: product.details || '',
+      stock_quantity: product.stock_quantity || '',
+      discount: product.discount || 0,
+      is_new: product.is_new === 1 || product.is_new === true,
+      free_shipping: product.free_shipping === 1 || product.free_shipping === true,
+      image: null 
+    });
+    setShowModal(true);
+  };
 
   const openImageModal = (product) => {
     setSelectedProductForImages(product);
@@ -322,90 +394,86 @@ const res = await api.post('/admin/upload-image', formData, {
     setShowImageModal(true);
   };
 
- const handleProductSubmit = async (e) => {
-  e.preventDefault();
-  setLoading(true);
-  const formData = new FormData();
-  
-  if (productForm.name) formData.append('name', productForm.name);
-  if (productForm.category) formData.append('category', productForm.category);
-  
-  // Fiyat - sadece rakamları al ve gönder
-  let finalPrice = productForm.price;
-  if (finalPrice) {
-    // Sadece rakamları al
-    if (typeof finalPrice === 'string') {
-      finalPrice = finalPrice.replace(/[^0-9]/g, '');
+  const handleProductSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    const formData = new FormData();
+    
+    if (productForm.name) formData.append('name', productForm.name);
+    if (productForm.category) formData.append('category', productForm.category);
+    
+    let finalPrice = productForm.price;
+    if (finalPrice) {
+      if (typeof finalPrice === 'string') {
+        finalPrice = finalPrice.replace(/[^0-9]/g, '');
+      }
+      formData.append('price', finalPrice);
     }
-    console.log("💰 Gönderilen fiyat (temiz):", finalPrice);
-    formData.append('price', finalPrice);
-  }
-  
-  if (productForm.description) formData.append('description', productForm.description);
-  if (productForm.details) formData.append('details', productForm.details);
-  if (productForm.stock_quantity) formData.append('stock_quantity', productForm.stock_quantity);
-  if (productForm.discount) formData.append('discount', productForm.discount);
-  
-  formData.append('is_new', productForm.is_new ? 'true' : 'false');
-  formData.append('free_shipping', productForm.free_shipping ? 'true' : 'false');
-  
-  if (productForm.image) {
-    formData.append('image', productForm.image);
-  }
-  
-  try {
-    if (editMode) {
-      await api.put(`/admin/update-product/${productForm.id}`, formData);
-      toast.success('✅ Ürün başarıyla güncellendi!');
-    } else {
-      await api.post('/admin/add-product', formData);
-      toast.success('🎉 Yeni ürün başarıyla eklendi!');
+    
+    if (productForm.description) formData.append('description', productForm.description);
+    if (productForm.details) formData.append('details', productForm.details);
+    if (productForm.stock_quantity) formData.append('stock_quantity', productForm.stock_quantity);
+    if (productForm.discount) formData.append('discount', productForm.discount);
+    
+    formData.append('is_new', productForm.is_new ? 'true' : 'false');
+    formData.append('free_shipping', productForm.free_shipping ? 'true' : 'false');
+    
+    if (productForm.image) {
+      formData.append('image', productForm.image);
     }
-    setShowModal(false);
-    fetchAdminData();
-  } catch (err) { 
-    const errorMsg = err.response?.data?.error || "İşlem başarısız!";
-    toast.error(errorMsg);
-    console.error("Hata:", err.response?.data);
-  }
-  setLoading(false);
-};
+    
+    try {
+      if (editMode) {
+        await api.put(`/admin/update-product/${productForm.id}`, formData);
+        toast.success('✅ Ürün başarıyla güncellendi!');
+      } else {
+        await api.post('/admin/add-product', formData);
+        toast.success('🎉 Yeni ürün başarıyla eklendi!');
+      }
+      setShowModal(false);
+      fetchAdminData();
+    } catch (err) { 
+      const errorMsg = err.response?.data?.error || "İşlem başarısız!";
+      toast.error(errorMsg);
+      console.error("Hata:", err.response?.data);
+    }
+    setLoading(false);
+  };
 
-const handleImageUpload = async (e) => {
+  const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
     const formData = new FormData();
-    formData.append('image', file); // Backend 'image' bekliyor
+    formData.append('image', file);
     formData.append('is_main', productImages.length === 0 ? 'true' : 'false');
     formData.append('display_order', String(productImages.length));
 
     try {
-        setImageUploadLoading(true);
-        // Header'ı boş bırakın veya Content-Type eklemeyin, Axios otomatik halleder
-await api.post(`/admin/add-product-image/${selectedProductForImages.id}`, formData, {
-    headers: { 'Content-Type': 'multipart/form-data' }
-});
-        toast.success('🖼️ Resim başarıyla eklendi!');
-        fetchProductImages(selectedProductForImages.id);
+      setImageUploadLoading(true);
+      await api.post(`/admin/add-product-image/${selectedProductForImages.id}`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      toast.success('🖼️ Resim başarıyla eklendi!');
+      fetchProductImages(selectedProductForImages.id);
     } catch (err) {
-        console.error("Yükleme Hatası Detayı:", err.response?.data);
-        toast.error(err.response?.data?.error || "Resim yüklenemedi");
+      console.error("Yükleme Hatası Detayı:", err.response?.data);
+      toast.error(err.response?.data?.error || "Resim yüklenemedi");
     } finally {
-        setImageUploadLoading(false);
-        e.target.value = '';
+      setImageUploadLoading(false);
+      e.target.value = '';
     }
-};
+  };
 
   const deleteProductImage = async (imageId) => {
     if (!window.confirm("Bu resmi silmek istediğinize emin misiniz?")) return;
     
     try {
       await api.delete(`/admin/delete-product-image/${imageId}`);
-      alert("Resim silindi!");
+      toast.success("Resim silindi!");
       fetchProductImages(selectedProductForImages.id);
     } catch (err) {
-      alert("Resim silinemedi.");
+      toast.error("Resim silinemedi.");
     }
   };
 
@@ -414,7 +482,7 @@ await api.post(`/admin/add-product-image/${selectedProductForImages.id}`, formDa
       try {
         await api.delete(`/admin/delete-product/${id}`);
         fetchAdminData();
-      } catch (err) { alert("Silme işlemi başarısız."); }
+      } catch (err) { toast.error("Silme işlemi başarısız."); }
     }
   };
 
@@ -446,19 +514,9 @@ await api.post(`/admin/add-product-image/${selectedProductForImages.id}`, formDa
     }
   };
 
-  const [showImageUploader, setShowImageUploader] = useState(false);
-  
-  const insertImageToDescription = (imageUrl) => {
-    setProductForm({
-      ...productForm,
-      description: productForm.description + `\n<img src="${imageUrl}" alt="Ürün görseli" style="max-width: 100%; margin: 10px 0;" />\n`
-    });
-    setShowImageUploader(false);
-  };
-
   return (
     <div className="admin-container">
-      {/* SIDEBAR - Aynı */}
+      {/* SIDEBAR */}
       <aside className="admin-sidebar">
         <div className="admin-logo">
           <div className="admin-logo-icon">
@@ -480,6 +538,10 @@ await api.post(`/admin/add-product-image/${selectedProductForImages.id}`, formDa
             <ShoppingCart className="admin-menu-icon" />
             <span>Siparişler</span>
           </button>
+          <button onClick={() => setActiveTab('categories')} className={`admin-menu-item ${activeTab === 'categories' ? 'admin-menu-item-active' : ''}`}>
+            <Tags className="admin-menu-icon" />
+            <span>Kategoriler</span>
+          </button>
         </nav>
         
         <button onClick={() => navigate('/')} className="admin-sidebar-footer">
@@ -494,7 +556,6 @@ await api.post(`/admin/add-product-image/${selectedProductForImages.id}`, formDa
         {/* DASHBOARD TAB - Aynı */}
         {activeTab === 'dashboard' && (
           <div>
-            {/* Dashboard içeriği aynı kalır */}
             <div className="admin-header">
               <h2 className="admin-header-title">Genel Durum 👋</h2>
               <p className="admin-header-subtitle">Mağazanın bugünkü performans verileri.</p>
@@ -698,8 +759,9 @@ await api.post(`/admin/add-product-image/${selectedProductForImages.id}`, formDa
                   <div className="filter-group">
                     <label>📁 Kategori</label>
                     <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
-                      {categories.map(cat => (
-                        <option key={cat.value} value={cat.value}>{cat.label}</option>
+                      <option value="all">📁 Tüm Kategoriler</option>
+                      {categories.filter(c => c.active).map(cat => (
+                        <option key={cat.id} value={cat.name}>{cat.icon} {cat.name}</option>
                       ))}
                     </select>
                   </div>
@@ -795,14 +857,14 @@ await api.post(`/admin/add-product-image/${selectedProductForImages.id}`, formDa
                           <h3 className="product-name">{product.name}</h3>
                           <div className="product-price-row">
                             {hasDiscount ? (
-    <>
-      <span className="product-price-original-small">{product.price} TL</span>
-      <span className="product-price-discount-small">{Math.floor(discountedPrice)} TL</span>
-    </>
-  ) : (
-    <span className="product-price-current-small">{product.price} TL</span>
-  )}
-</div>
+                              <>
+                                <span className="product-price-original-small">{product.price} TL</span>
+                                <span className="product-price-discount-small">{Math.floor(discountedPrice)} TL</span>
+                              </>
+                            ) : (
+                              <span className="product-price-current-small">{product.price} TL</span>
+                            )}
+                          </div>
                         </div>
                         <div className="product-actions">
                           <button onClick={() => openImageModal(product)} className="btn-images">
@@ -824,7 +886,7 @@ await api.post(`/admin/add-product-image/${selectedProductForImages.id}`, formDa
           </div>
         )}
 
-        {/* ORDERS TAB - Aynı */}
+        {/* ORDERS TAB */}
         {activeTab === 'orders' && (
           <div>
             <div className="orders-header">
@@ -895,6 +957,108 @@ await api.post(`/admin/add-product-image/${selectedProductForImages.id}`, formDa
             </div>
           </div>
         )}
+
+        {/* CATEGORIES TAB */}
+        {activeTab === 'categories' && (
+          <div>
+            <div className="products-header">
+              <div>
+                <h2 className="products-title">📁 Kategori Yönetimi</h2>
+                <p className="products-count">
+                  Toplam {filteredCategories.length} kategori
+                </p>
+              </div>
+              <div className="products-header-actions">
+                <button 
+                  onClick={() => {
+                    setEditingCategory(null);
+                    setCategoryForm({ name: '', icon: '📦', active: true });
+                    setShowCategoryModal(true);
+                  }} 
+                  className="btn-add-product"
+                >
+                  <Plus size={20} /> Yeni Kategori
+                </button>
+              </div>
+            </div>
+
+            {/* Arama Kutusu */}
+            <div className="filters-panel-admin" style={{ marginBottom: '24px' }}>
+              <div className="filter-group">
+                <label>🔍 Kategori Ara</label>
+                <div className="search-input-wrapper">
+                  <Search size={18} className="search-icon" />
+                  <input
+                    type="text"
+                    placeholder="Kategori adı ile ara..."
+                    value={categorySearch}
+                    onChange={(e) => setCategorySearch(e.target.value)}
+                    className="search-input"
+                  />
+                  {categorySearch && (
+                    <button onClick={() => setCategorySearch('')} className="clear-search">
+                      ✕
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Kategoriler Tablosu */}
+            <div className="orders-table-container">
+              <table className="orders-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>İkon</th>
+                    <th>Kategori Adı</th>
+                    <th>Durum</th>
+                    <th>İşlemler</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredCategories.length === 0 ? (
+                    <tr>
+                      <td colSpan="5" style={{ textAlign: 'center', padding: '48px' }}>
+                        <Package size={48} style={{ marginBottom: '16px', opacity: 0.3 }} />
+                        <p>Kategori bulunamadı</p>
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredCategories.map(cat => (
+                      <tr key={cat.id}>
+                        <td className="order-id">#{cat.id}</td>
+                        <td style={{ fontSize: '28px' }}>{cat.icon || '📦'}</td>
+                        <td style={{ fontWeight: 'bold', color: 'white' }}>{cat.name}</td>
+                        <td>
+                          <span className={`order-status-badge ${cat.active ? 'status-delivered' : 'status-cancelled'}`}>
+                            {cat.active ? '✅ Aktif' : '⛔ Pasif'}
+                          </span>
+                        </td>
+                        <td>
+                          <div style={{ display: 'flex', gap: '8px' }}>
+                            <button onClick={() => openCategoryEditModal(cat)} className="btn-edit" style={{ padding: '8px 16px' }}>
+                              <Edit3 size={14} /> Düzenle
+                            </button>
+                            <button onClick={() => deleteCategory(cat.id)} className="btn-delete" style={{ padding: '8px 16px' }}>
+                              <Trash2 size={14} /> Sil
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            <div style={{ marginTop: '24px', background: 'rgba(245,158,11,0.1)', borderRadius: '16px', padding: '16px', border: '1px solid rgba(245,158,11,0.3)' }}>
+              <p style={{ fontSize: '13px', color: '#fbbf24' }}>
+                💡 <strong>Not:</strong> Kategorileri düzenlediğinizde, ana mağazadaki kategori listesi otomatik güncellenir.
+              </p>
+            </div>
+          </div>
+        )}
       </main>
 
       {/* ÜRÜN EKLE/DÜZENLE MODAL */}
@@ -909,34 +1073,30 @@ await api.post(`/admin/add-product-image/${selectedProductForImages.id}`, formDa
             </div>
             
             <form onSubmit={handleProductSubmit} className="modal-form">
-              {/* Ürün Adı */}
               <div className="modal-form-field">
                 <label className="modal-label">📦 Ürün Adı</label>
                 <input className="modal-input" placeholder="Örn: iPhone 15 Pro" value={productForm.name} onChange={e => setProductForm({...productForm, name: e.target.value})} required />
               </div>
               
-              {/* Fiyat ve Stok */}
               <div className="modal-form-row">
                 <div className="modal-form-field">
                   <label className="modal-label">💰 Fiyat (TL)</label>
-  <input 
-    className="modal-input" 
-    placeholder="Örn: 47" 
-    type="text" 
-    inputMode="numeric"
-    value={productForm.price} 
-    onChange={e => {
-      // Sadece rakamları al (virgül ve noktayı yoksay)
-      const rawValue = e.target.value.replace(/[^0-9]/g, '');
-      console.log("💰 Input değişti (temizlenmiş):", rawValue);
-      setProductForm({...productForm, price: rawValue});
-    }} 
-    required 
-  />
-  <small style={{ color: '#64748b', fontSize: '11px', marginTop: '4px', display: 'block' }}>
-    Sadece rakam girin. Örnek: 47 (ön yüzde 47,00 TL olarak görünür)
-  </small>
-</div>
+                  <input 
+                    className="modal-input" 
+                    placeholder="Örn: 47" 
+                    type="text" 
+                    inputMode="numeric"
+                    value={productForm.price} 
+                    onChange={e => {
+                      const rawValue = e.target.value.replace(/[^0-9]/g, '');
+                      setProductForm({...productForm, price: rawValue});
+                    }} 
+                    required 
+                  />
+                  <small style={{ color: '#64748b', fontSize: '11px', marginTop: '4px', display: 'block' }}>
+                    Sadece rakam girin. Örnek: 47 (ön yüzde 47,00 TL olarak görünür)
+                  </small>
+                </div>
                 <div className="modal-form-field">
                   <label className="modal-label">📊 Stok Miktarı</label>
                   <input 
@@ -950,7 +1110,6 @@ await api.post(`/admin/add-product-image/${selectedProductForImages.id}`, formDa
                 </div>
               </div>
 
-              {/* İndirim ve Kategori */}
               <div className="modal-form-row">
                 <div className="modal-form-field">
                   <label className="modal-label">🏷️ İndirim (%)</label>
@@ -966,14 +1125,13 @@ await api.post(`/admin/add-product-image/${selectedProductForImages.id}`, formDa
                   <label className="modal-label">📁 Kategori</label>
                   <select className="modal-input" value={productForm.category} onChange={e => setProductForm({...productForm, category: e.target.value})} required>
                     <option value="" disabled>Kategori Seçiniz</option>
-                    {categories.filter(c => c.value !== 'all').map(cat => (
-                      <option key={cat.value} value={cat.value}>{cat.label}</option>
+                    {categories.filter(c => c.active).map(cat => (
+                      <option key={cat.id} value={cat.name}>{cat.icon} {cat.name}</option>
                     ))}
                   </select>
                 </div>
               </div>
 
-              {/* Yeni Ürün ve Kargo Bedava - Checkbox'lar */}
               <div className="modal-checkbox-row">
                 <label className="checkbox-label">
                   <input 
@@ -995,13 +1153,11 @@ await api.post(`/admin/add-product-image/${selectedProductForImages.id}`, formDa
                 </label>
               </div>
               
-              {/* Kısa Açıklama */}
               <div className="modal-form-field" style={{ gridColumn: 'span 2' }}>
                 <label className="modal-label">📝 Kısa Açıklama (Sadece Yazı)</label>
                 <textarea className="modal-textarea" placeholder="Ürünün kısa özetini yazın..." value={productForm.description} onChange={e => setProductForm({...productForm, description: e.target.value})} rows="3" />
               </div>
 
-              {/* Ürün Detayları - Resimli Alan */}
               <div className="modal-form-field" style={{ gridColumn: 'span 2' }}>
                 <label className="modal-label">🖼️ Ürün Detayları (Resim + Yazı)</label>
                 <div className="detail-toolbar">
@@ -1027,7 +1183,6 @@ await api.post(`/admin/add-product-image/${selectedProductForImages.id}`, formDa
                 </div>
               </div>
               
-              {/* Ana Görsel */}
               <div className="modal-form-field">
                 <label className="modal-label">🖼️ Ana Görsel</label>
                 <div className="file-upload">
@@ -1083,6 +1238,69 @@ await api.post(`/admin/add-product-image/${selectedProductForImages.id}`, formDa
 
             <div className="modal-actions">
               <button onClick={() => setShowImageModal(false)} className="modal-btn-submit">Kapat</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* KATEGORİ EKLE/DÜZENLE MODAL */}
+      {showCategoryModal && (
+        <div className="modal-overlay">
+          <div className="modal-content" style={{ maxWidth: '480px' }}>
+            <div className="modal-header">
+              <h2 className="modal-title">
+                {editingCategory ? '📝 Kategori Düzenle' : '➕ Yeni Kategori Ekle'}
+              </h2>
+              <button onClick={() => setShowCategoryModal(false)} className="modal-close">
+                <X size={28} />
+              </button>
+            </div>
+
+            <div className="modal-form">
+              <div className="modal-form-field">
+                <label className="modal-label">🏷️ Kategori Adı</label>
+                <input
+                  className="modal-input"
+                  placeholder="Örn: Parfüm"
+                  value={categoryForm.name}
+                  onChange={(e) => setCategoryForm({ ...categoryForm, name: e.target.value })}
+                />
+              </div>
+
+              <div className="modal-form-field">
+                <label className="modal-label">😀 Emoji / İkon</label>
+                <input
+                  className="modal-input"
+                  placeholder="Örn: 👗"
+                  value={categoryForm.icon}
+                  onChange={(e) => setCategoryForm({ ...categoryForm, icon: e.target.value })}
+                  maxLength={2}
+                />
+                <small style={{ color: '#94a3b8', fontSize: '11px' }}>
+                  Bir emoji kullanın (örn: 👗, 👔, 📱)
+                </small>
+              </div>
+
+              <div className="modal-checkbox-row">
+                <label className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={categoryForm.active}
+                    onChange={(e) => setCategoryForm({ ...categoryForm, active: e.target.checked })}
+                  />
+                  ✅ Kategori aktif (mağazada görünsün)
+                </label>
+              </div>
+
+              <div className="modal-actions">
+                <button type="button" onClick={() => setShowCategoryModal(false)} className="modal-btn-cancel">
+                  İptal
+                </button>
+                <button type="button" onClick={handleCategorySubmit} className="modal-btn-submit">
+                  <Save size={18} />
+                  {editingCategory ? 'Güncelle' : 'Ekle'}
+                </button>
+              </div>
             </div>
           </div>
         </div>

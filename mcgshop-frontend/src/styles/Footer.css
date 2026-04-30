@@ -1,7 +1,8 @@
 .footer {
-  background: linear-gradient(135deg, #0f172a, #1e293b);
-  color: #e2e8f0;
+  background: linear-gradient(135deg, #805252 0%, #ad1616 50%, #db9e65 100%);
+  color: #fce4e4;
   margin-top: 60px;
+  border: none;
 }
 
 .footer-container {
@@ -17,24 +18,19 @@
 .footer-logo {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
   margin-bottom: 16px;
 }
 
-.footer-logo span {
-  font-size: 24px;
-  font-weight: 900;
-  color: white;
-}
-
-.footer-logo-highlight {
-  color: #667eea;
+.footer-logo-img {
+  height: 50px;
+  width: auto;
 }
 
 .footer-description {
   font-size: 14px;
   line-height: 1.6;
-  color: #94a3b8;
+  color: rgba(255, 255, 255, 0.8);
   margin-bottom: 20px;
 }
 
@@ -47,17 +43,18 @@
 .social-link {
   width: 36px;
   height: 36px;
-  background: rgba(255,255,255,0.1);
+  background: rgba(255, 255, 255, 0.15);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #94a3b8;
+  color: rgba(255, 255, 255, 0.9);
   transition: all 0.3s;
+  text-decoration: none;
 }
 
 .social-link:hover {
-  background: #667eea;
+  background: rgba(255, 255, 255, 0.3);
   color: white;
   transform: translateY(-3px);
 }
@@ -79,7 +76,7 @@
   left: 0;
   width: 40px;
   height: 2px;
-  background: #667eea;
+  background: #FFD700;
 }
 
 /* Linkler */
@@ -93,7 +90,7 @@
 }
 
 .footer-links a {
-  color: #94a3b8;
+  color: rgba(255, 255, 255, 0.8);
   text-decoration: none;
   font-size: 14px;
   transition: all 0.3s;
@@ -101,7 +98,7 @@
 }
 
 .footer-links a:hover {
-  color: #667eea;
+  color: #0a0904;
   transform: translateX(5px);
 }
 
@@ -117,11 +114,11 @@
   align-items: center;
   gap: 10px;
   font-size: 14px;
-  color: #94a3b8;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .contact-item svg {
-  color: #667eea;
+  color: #FFD700;
 }
 
 /* Badgeler */
@@ -137,11 +134,11 @@
   align-items: center;
   gap: 10px;
   font-size: 13px;
-  color: #94a3b8;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .badge svg {
-  color: #10b981;
+  color: #FFD700;
 }
 
 /* Ödeme İkonları */
@@ -154,17 +151,18 @@
 
 .payment-icons img {
   height: 24px;
-  filter: brightness(0) invert(0.7);
-  transition: filter 0.3s;
+  filter: brightness(0) invert(1);
+  opacity: 0.7;
+  transition: opacity 0.3s;
 }
 
 .payment-icons img:hover {
-  filter: brightness(0) invert(1);
+  opacity: 1;
 }
 
 /* Footer Bottom */
 .footer-bottom {
-  border-top: 1px solid rgba(255,255,255,0.1);
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
   padding: 20px;
 }
 
@@ -180,13 +178,14 @@
 
 .footer-bottom p {
   font-size: 13px;
-  color: #64748b;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .footer-made-with {
   display: flex;
   align-items: center;
   gap: 5px;
+  color: #FFD700;
 }
 
 /* Responsive */

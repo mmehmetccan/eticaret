@@ -1,11 +1,11 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
 import { 
-  ShoppingCart, User, Search, Store, LayoutDashboard, Heart, X, 
+  ShoppingCart, User, Search, LayoutDashboard, Heart, X, 
   ChevronDown, ChevronRight, Grid3X3, 
-  Shirt, Home, Smartphone, Baby, Watch, 
-  Sparkles, Gamepad, Book, Coffee, Car, 
-  GraduationCap, Dumbbell, Laptop, Sofa, Package
+  SprayCan, Flower2, Droplets, Eye, Bath, 
+  Scissors, Gem, Sparkles, Package, Shield, Sun,
+  Palette, Wind, Droplet, Share2, CircleUserRound
 } from 'lucide-react';
 import api from '../api/api';
 import '../styles/Navbar.css';
@@ -22,116 +22,118 @@ const Navbar = () => {
   const [activeCategory, setActiveCategory] = useState(null);
   const searchRef = useRef(null);
   const categoryRef = useRef(null);
-  const categoryTimeoutRef = useRef(null);
 
-  // Kategoriler ve alt kategoriler
+  // Kategoriler ve alt kategoriler - PARFÜM & KOZMETİK
   const categories = [
     {
-      id: 'kadin',
-      name: 'Kadın',
-      icon: <Shirt size={18} />,
+      id: 'parfum',
+      name: 'Parfüm',
+      icon: <SprayCan size={18} />,
       subCategories: [
-        { name: 'Giyim', path: '/category/kadin/giyim' },
-        { name: 'Elbise', path: '/category/kadin/elbise' },
-        { name: 'Tişört', path: '/category/kadin/tisort' },
-        { name: 'Gömlek', path: '/category/kadin/gomlek' },
-        { name: 'Kot Pantolon', path: '/category/kadin/kot-pantolon' },
-        { name: 'Kot Ceket', path: '/category/kadin/kot-ceket' },
-        { name: 'Ayakkabı', path: '/category/kadin/ayakkabi' },
-        { name: 'Çanta', path: '/category/kadin/canta' },
-        { name: 'Aksesuar', path: '/category/kadin/aksesuar' }
+        { name: 'Kadın Parfüm', path: '/category/parfum/kadın' },
+        { name: 'Erkek Parfüm', path: '/category/parfum/erkek' },
+        { name: 'Uniseks Parfüm', path: '/category/parfum/uniseks' },
+        { name: 'Parfüm Setleri', path: '/category/parfum/setleri' },
+        { name: 'Mini Parfümler', path: '/category/parfum/mini' },
+        { name: 'Arap Parfümleri', path: '/category/parfum/arap' },
+        { name: 'Niş Parfümler', path: '/category/parfum/nis' }
       ]
     },
     {
-      id: 'erkek',
-      name: 'Erkek',
-      icon: <User size={18} />,
+      id: 'makyaj',
+      name: 'Makyaj',
+      icon: <Palette size={18} />,
       subCategories: [
-        { name: 'Giyim', path: '/category/erkek/giyim' },
-        { name: 'Tişört', path: '/category/erkek/tisort' },
-        { name: 'Gömlek', path: '/category/erkek/gomlek' },
-        { name: 'Pantolon', path: '/category/erkek/pantolon' },
-        { name: 'Ceket', path: '/category/erkek/ceket' },
-        { name: 'Ayakkabı', path: '/category/erkek/ayakkabi' },
-        { name: 'Saat', path: '/category/erkek/saat' },
-        { name: 'Cüzdan', path: '/category/erkek/cuzdan' },
-        { name: 'Aksesuar', path: '/category/erkek/aksesuar' }
+        { name: 'Ruj & Likit Ruj', path: '/category/makyaj/ruj' },
+        { name: 'Fondöten', path: '/category/makyaj/fondoten' },
+        { name: 'Allık', path: '/category/makyaj/allik' },
+        { name: 'Far & Göz Kalemi', path: '/category/makyaj/far' },
+        { name: 'Maskara', path: '/category/makyaj/maskara' },
+        { name: 'Pudra & Baz', path: '/category/makyaj/pudra' },
+        { name: 'Aydınlatıcı & Kontür', path: '/category/makyaj/aydinlatici' },
+        { name: 'Makyaj Setleri', path: '/category/makyaj/setleri' },
+        { name: 'Makyaj Fırçaları', path: '/category/makyaj/fircalar' }
       ]
     },
     {
-      id: 'cocuk',
-      name: 'Çocuk',
-      icon: <Baby size={18} />,
+      id: 'cilt-bakim',
+      name: 'Cilt Bakım',
+      icon: <Droplets size={18} />,
       subCategories: [
-        { name: 'Kız Çocuk', path: '/category/cocuk/kiz' },
-        { name: 'Erkek Çocuk', path: '/category/cocuk/erkek' },
-        { name: 'Bebek', path: '/category/cocuk/bebek' },
-        { name: 'Oyuncak', path: '/category/cocuk/oyuncak' },
-        { name: 'Okul Kıyafetleri', path: '/category/cocuk/okul' }
+        { name: 'Temizleyiciler', path: '/category/cilt-bakim/temizleyici' },
+        { name: 'Nemlendiriciler', path: '/category/cilt-bakim/nemlendirici' },
+        { name: 'Güneş Kremleri', path: '/category/cilt-bakim/gunes-kremi' },
+        { name: 'Serumlar', path: '/category/cilt-bakim/serum' },
+        { name: 'Maskeler', path: '/category/cilt-bakim/maske' },
+        { name: 'Tonikler', path: '/category/cilt-bakim/tonik' },
+        { name: 'Peeling & Eksfoliyant', path: '/category/cilt-bakim/peeling' },
+        { name: 'Göz Bakım', path: '/category/cilt-bakim/goz' }
       ]
     },
     {
-      id: 'elektronik',
-      name: 'Elektronik',
-      icon: <Smartphone size={18} />,
+      id: 'sac-bakim',
+      name: 'Saç Bakım',
+      icon: <Scissors size={18} />,
       subCategories: [
-        { name: 'Telefon', path: '/category/elektronik/telefon' },
-        { name: 'Bilgisayar', path: '/category/elektronik/bilgisayar' },
-        { name: 'Tablet', path: '/category/elektronik/tablet' },
-        { name: 'Kulaklık', path: '/category/elektronik/kulaklik' },
-        { name: 'Akıllı Saat', path: '/category/elektronik/akilli-saat' },
-        { name: 'Oyun Konsolu', path: '/category/elektronik/oyun-konsolu' },
-        { name: 'Aksesuar', path: '/category/elektronik/aksesuar' }
+        { name: 'Şampuan', path: '/category/sac-bakim/sampuan' },
+        { name: 'Saç Kremi', path: '/category/sac-bakim/krem' },
+        { name: 'Saç Maskesi', path: '/category/sac-bakim/maske' },
+        { name: 'Saç Yağları', path: '/category/sac-bakim/yag' },
+        { name: 'Saç Spreyleri', path: '/category/sac-bakim/sprey' },
+        { name: 'Saç Boyası', path: '/category/sac-bakim/boya' },
+        { name: 'Kepek Şampuan', path: '/category/sac-bakim/kepek' },
+        { name: 'Dökülme Karşıtı', path: '/category/sac-bakim/dokulme' }
       ]
     },
     {
-      id: 'ev-yasam',
-      name: 'Ev & Yaşam',
-      icon: <Home size={18} />,
+      id: 'vucut-bakim',
+      name: 'Vücut Bakım',
+      icon: <Bath size={18} />,
       subCategories: [
-        { name: 'Mobilya', path: '/category/ev/mobilya' },
-        { name: 'Dekorasyon', path: '/category/ev/dekorasyon' },
-        { name: 'Mutfak', path: '/category/ev/mutfak' },
-        { name: 'Banyo', path: '/category/ev/banyo' },
-        { name: 'Yatak Odası', path: '/category/ev/yatak-odasi' },
-        { name: 'Bahçe', path: '/category/ev/bahce' }
+        { name: 'Duş Jeli', path: '/category/vucut-bakim/duş-jeli' },
+        { name: 'Vücut Losyonu', path: '/category/vucut-bakim/losyon' },
+        { name: 'Vücut Yağı', path: '/category/vucut-bakim/yag' },
+        { name: 'El & Ayak Bakım', path: '/category/vucut-bakim/el-ayak' },
+        { name: 'Deodorant', path: '/category/vucut-bakim/deodorant' },
+        { name: 'Tıraş Ürünleri', path: '/category/vucut-bakim/tras' }
       ]
     },
     {
-      id: 'kozmetik',
-      name: 'Kozmetik',
-      icon: <Sparkles size={18} />,
+      id: 'erkek-bakim',
+      name: 'Erkek Bakım',
+      icon: <Shield size={18} />,
       subCategories: [
-        { name: 'Parfüm', path: '/category/kozmetik/parfum' },
-        { name: 'Makyaj', path: '/category/kozmetik/makyaj' },
-        { name: 'Cilt Bakım', path: '/category/kozmetik/cilt-bakim' },
-        { name: 'Saç Bakım', path: '/category/kozmetik/sac-bakim' },
-        { name: 'Kişisel Bakım', path: '/category/kozmetik/kisisel-bakim' }
+        { name: 'Tıraş Ürünleri', path: '/category/erkek-bakim/tras' },
+        { name: 'Erkek Parfüm', path: '/category/erkek-bakim/parfum' },
+        { name: 'Yüz Bakım', path: '/category/erkek-bakim/yuz' },
+        { name: 'Saç Bakım', path: '/category/erkek-bakim/sac' },
+        { name: 'Sakal Bakım', path: '/category/erkek-bakim/sakal' }
       ]
     },
     {
-      id: 'spor',
-      name: 'Spor & Outdoor',
-      icon: <Dumbbell size={18} />,
+      id: 'aksesuar',
+      name: 'Aksesuar',
+      icon: <Gem size={18} />,
       subCategories: [
-        { name: 'Spor Ayakkabı', path: '/category/spor/ayakkabi' },
-        { name: 'Spor Giyim', path: '/category/spor/giyim' },
-        { name: 'Fitness', path: '/category/spor/fitness' },
-        { name: 'Kamp & Doğa', path: '/category/spor/kamp' },
-        { name: 'Bisiklet', path: '/category/spor/bisiklet' },
-        { name: 'Yüzme', path: '/category/spor/yuzme' }
+        { name: 'Makyaj Çantası', path: '/category/aksesuar/makyaj-cantasi' },
+        { name: 'Aynalar', path: '/category/aksesuar/ayna' },
+        { name: 'Pamuk & Sünger', path: '/category/aksesuar/pamuk' },
+        { name: 'Fırçalık', path: '/category/aksesuar/fircalik' },
+        { name: 'Seyahat Setleri', path: '/category/aksesuar/seyahat' }
       ]
     },
     {
-      id: 'kitap',
-      name: 'Kitap & Kırtasiye',
-      icon: <Book size={18} />,
+      id: 'markalar',
+      name: 'Markalar',
+      icon: <Package size={18} />,
       subCategories: [
-        { name: 'Roman', path: '/category/kitap/roman' },
-        { name: 'Kişisel Gelişim', path: '/category/kitap/kisisel-gelisim' },
-        { name: 'Çocuk Kitapları', path: '/category/kitap/cocuk' },
-        { name: 'Kırtasiye', path: '/category/kirtasiye' },
-        { name: 'Defter', path: '/category/kirtasiye/defter' }
+        { name: 'Dior', path: '/brand/dior' },
+        { name: 'Chanel', path: '/brand/chanel' },
+        { name: 'Lancôme', path: '/brand/lancome' },
+        { name: 'MAC', path: '/brand/mac' },
+        { name: 'NYX', path: '/brand/nyx' },
+        { name: 'The Ordinary', path: '/brand/the-ordinary' },
+        { name: 'Tüm Markalar', path: '/brands' }
       ]
     }
   ];
@@ -219,7 +221,6 @@ const Navbar = () => {
     return <span className="mcg-search-price-current">{price} TL</span>;
   };
 
-  // Favori butonuna tıklayınca profile favoriler sekmesine git
   const handleFavoritesClick = (e) => {
     e.preventDefault();
     if (user) {
@@ -233,14 +234,13 @@ const Navbar = () => {
     <nav className="mcg-navbar">
       <div className="mcg-navbar-container">
         
-        {/* LOGO */}
+        {/* LOGO - RESİM OLARAK */}
         <Link to="/" className="mcg-navbar-logo">
-          <div className="mcg-navbar-logo-icon">
-            <Store size={24} />
-          </div>
-          <span className="mcg-navbar-logo-text">
-            MCG<span className="mcg-navbar-logo-highlight">SHOP</span>
-          </span>
+          <img 
+            src="/us_kozmetik_yuvarlak.jpg" 
+            alt="US Kozmetik & Parfüm" 
+            className="mcg-navbar-logo-img"
+          />
         </Link>
 
         {/* KATEGORİ MENÜSÜ */}
@@ -316,7 +316,7 @@ const Navbar = () => {
             <Search className="mcg-navbar-search-icon" size={18} />
             <input 
               type="text" 
-              placeholder="Ürün, kategori veya marka ara..." 
+              placeholder="Parfüm, krem, şampuan veya marka ara..." 
               className="mcg-navbar-search-input"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -412,7 +412,7 @@ const Navbar = () => {
             </Link>
           )}
 
-          {/* Favoriler Butonu - Profile Favoriler Sekmesine Yönlendirir */}
+          {/* Favoriler Butonu */}
           <button 
             onClick={handleFavoritesClick}
             className="mcg-navbar-btn"
