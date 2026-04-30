@@ -46,7 +46,7 @@ app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/reviews', reviewRoutes);
-app.use('/api/categories', categoryRoutes);  // SADECE BURADA TANIMLI
+app.use('/api', categoryRoutes);  // SADECE BURADA TANIMLI
 
 // 2. SONRA STATİK DOSYALAR (Resimler ve Build dosyaları)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

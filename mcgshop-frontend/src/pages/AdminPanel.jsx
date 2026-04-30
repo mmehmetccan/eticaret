@@ -1185,7 +1185,7 @@ const handleImageUpload = async (e) => {
                 </div>
               </div>
               
-              <div className="modal-form-field">
+              {/*<div className="modal-form-field">
                 <label className="modal-label">🖼️ Ana Görsel</label>
                 <div className="file-upload">
                   <input type="file" id="file-up" style={{display: 'none'}} onChange={e => setProductForm({...productForm, image: e.target.files[0]})} />
@@ -1193,7 +1193,7 @@ const handleImageUpload = async (e) => {
                     {productForm.image ? productForm.image.name : (editMode ? 'Yeni görsel seçin (opsiyonel)' : 'Ana Görsel Seçiniz')}
                   </label>
                 </div>
-              </div>
+              </div>*/}
 
               <div className="modal-actions">
                 <button type="button" onClick={() => setShowModal(false)} className="modal-btn-cancel">İptal</button>

@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../../config/db');
+const { verifyToken, isAdmin } = require('../middlewares/authMiddleware');
 
 // Kategorileri getir (HERKES)
 router.get('/', async (req, res) => {
@@ -14,7 +15,7 @@ router.get('/', async (req, res) => {
 });
 
 // Yeni kategori ekle (ADMIN)
-router.post('/admin/categories', async (req, res) => {
+router.post('/admin/categories',verifyToken, isAdmin, async (req, res) => {
   try {
     const { name, icon, active } = req.body;
     
@@ -34,7 +35,7 @@ router.post('/admin/categories', async (req, res) => {
 });
 
 // Kategori güncelle (ADMIN)
-router.put('/admin/categories/:id', async (req, res) => {
+router.put('/admin/categories/:id', verifyToken, isAdmin,async (req, res) => {
   try {
     const { name, icon, active } = req.body;
     await db.query(
@@ -49,7 +50,7 @@ router.put('/admin/categories/:id', async (req, res) => {
 });
 
 // Kategori sil (ADMIN)
-router.delete('/admin/categories/:id', async (req, res) => {
+router.delete('/admin/categories/:id',verifyToken, isAdmin, async (req, res) => {
   try {
     await db.query('DELETE FROM categories WHERE id = ?', [req.params.id]);
     res.json({ success: true });

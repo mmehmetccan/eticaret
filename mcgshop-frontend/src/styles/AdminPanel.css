@@ -33,12 +33,12 @@
 .admin-logo-icon {
   width: 48px;
   height: 48px;
-  background: #4f46e5;
+  background: #ef4444;
   border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 10px 20px -5px rgba(79, 70, 229, 0.3);
+  box-shadow: 0 10px 20px -5px rgba(239, 68, 68, 0.3);
 }
 
 .admin-logo-text {
@@ -49,7 +49,7 @@
 }
 
 .admin-logo-highlight {
-  color: #818cf8;
+  color: #f87171;
 }
 
 /* Sidebar Menu */
@@ -70,7 +70,7 @@
   cursor: pointer;
   background: transparent;
   border: none;
-  color: #a5b4fc;
+  color: #fca5a5;
   width: 100%;
 }
 
@@ -80,9 +80,9 @@
 }
 
 .admin-menu-item-active {
-  background: #4f46e5;
+  background: #ef4444;
   color: white;
-  box-shadow: 0 10px 20px -5px rgba(79, 70, 229, 0.3);
+  box-shadow: 0 10px 20px -5px rgba(239, 68, 68, 0.3);
 }
 
 .admin-menu-icon {
@@ -97,7 +97,7 @@
   gap: 12px;
   padding: 16px;
   font-weight: 700;
-  color: #a5b4fc;
+  color: #fca5a5;
   transition: color 0.3s ease;
   cursor: pointer;
   background: none;
@@ -127,7 +127,7 @@
 }
 
 .admin-header-subtitle {
-  color: rgba(165, 180, 252, 0.6);
+  color: rgba(248, 113, 113, 0.6);
   font-weight: 500;
 }
 
@@ -152,7 +152,7 @@
 
 .stat-card:hover {
   transform: translateY(-8px);
-  border-color: rgba(99, 102, 241, 0.5);
+  border-color: rgba(239, 68, 68, 0.5);
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
 }
 
@@ -167,7 +167,7 @@
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: #a5b4fc;
+  color: #fca5a5;
 }
 
 .stat-card-value {
@@ -193,7 +193,7 @@
 
 .icon-emerald { background: #10b981; }
 .icon-amber { background: #f59e0b; }
-.icon-indigo { background: #4f46e5; }
+.icon-indigo { background: #ef4444; }
 
 /* Products Tab */
 .products-header {
@@ -224,8 +224,8 @@
 }
 
 .btn-filter-toggle:hover {
-  border-color: #667eea;
-  color: #667eea;
+  border-color: #ef4444;
+  color: #ef4444;
 }
 
 .filters-panel-admin {
@@ -274,8 +274,8 @@
 
 .filter-group select:focus,
 .filter-group input:focus {
-  border-color: #667eea;
-  box-shadow: 0 0 0 2px rgba(102,126,234,0.1);
+  border-color: #ef4444;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.1);
 }
 
 .search-input-wrapper {
@@ -361,7 +361,7 @@
 }
 
 .btn-reset {
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #ef4444, #dc2626);
   color: white;
   padding: 10px 24px;
   border-radius: 30px;
@@ -378,12 +378,12 @@
 }
 
 .products-count {
-  color: rgba(165, 180, 252, 0.6);
+  color: rgba(248, 113, 113, 0.6);
   font-weight: 500;
 }
 
 .btn-add-product {
-  background: #4f46e5;
+  background: #ef4444;
   color: white;
   padding: 16px 32px;
   border-radius: 20px;
@@ -397,7 +397,7 @@
 }
 
 .btn-add-product:hover {
-  background: #4338ca;
+  background: #dc2626;
   transform: scale(0.98);
 }
 
@@ -408,7 +408,7 @@
 }
 
 .product-card {
-  background: rgba(30, 41, 59, 0.9);  /* Daha opak yapalım */
+  background: rgba(30, 41, 59, 0.9);
   border-radius: 32px;
   border: 1px solid rgba(255, 255, 255, 0.05);
   padding: 24px;
@@ -418,7 +418,7 @@
 }
 
 .product-card:hover {
-  border-color: rgba(99, 102, 241, 0.5);
+  border-color: rgba(239, 68, 68, 0.5);
 }
 
 .product-image {
@@ -449,8 +449,8 @@
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: #818cf8;
-  background: rgba(129, 140, 248, 0.1);
+  color: #f87171;
+  background: rgba(248, 113, 113, 0.1);
   padding: 4px 10px;
   border-radius: 20px;
 }
@@ -482,7 +482,7 @@
 .product-name {
   font-size: 18px;
   font-weight: 700;
-  color: #f1f5f9;  /* Açık gri-beyaz */
+  color: #f1f5f9;
   margin-top: 8px;
   background: transparent;
   display: block;
@@ -511,7 +511,7 @@
 .product-price-current-small {
   font-size: 20px;
   font-weight: 900;
-  color: #818cf8;
+  color: #f87171;
 }
 
 .product-actions {
@@ -545,11 +545,11 @@
 
 .btn-edit {
   background: rgba(255, 255, 255, 0.05);
-  color: #a5b4fc;
+  color: #fca5a5;
 }
 
 .btn-edit:hover {
-  background: #4f46e5;
+  background: #ef4444;
   color: white;
 }
 
@@ -578,7 +578,7 @@
 }
 
 .orders-count {
-  color: rgba(165, 180, 252, 0.6);
+  color: rgba(248, 113, 113, 0.6);
   margin-top: 8px;
 }
 
@@ -619,7 +619,7 @@
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: #a5b4fc;
+  color: #fca5a5;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
@@ -636,7 +636,7 @@
   font-family: monospace;
   font-size: 14px;
   font-weight: 700;
-  color: #818cf8;
+  color: #f87171;
 }
 
 .order-customer-name {
@@ -657,7 +657,7 @@
 }
 
 .order-items-icon {
-  color: #818cf8;
+  color: #f87171;
 }
 
 .order-items-count {
@@ -668,7 +668,7 @@
 .order-total {
   font-weight: 900;
   font-size: 18px;
-  color: #818cf8;
+  color: #f87171;
 }
 
 .order-status-badge {
@@ -726,7 +726,7 @@
 }
 
 .btn-detail:hover {
-  background: #4f46e5;
+  background: #ef4444;
 }
 
 .empty-state {
@@ -763,7 +763,7 @@
 }
 
 .add-img-btn {
-  background: #6366f1 !important;
+  background: #ef4444 !important;
   color: white !important;
   border: none;
   padding: 6px 14px;
@@ -785,11 +785,10 @@
   border-top-left-radius: 0 !important;
   border-top-right-radius: 0 !important;
   min-height: 200px;
-  font-family: monospace; /* HTML kodlarını daha rahat görmek için */
+  font-family: monospace;
   font-size: 13px;
 }
 
-/* Müşteri tarafındaki resimlerin stili */
 .rich-details-view img {
   max-width: 100%;
   height: auto;
@@ -800,12 +799,11 @@
 }
 
 .rich-details-view {
-  white-space: pre-line; /* Textarea'daki satır başlarını korur */
+  white-space: pre-line;
   line-height: 1.6;
 }
+
 /* ========== MODAL ========== */
-/* Arka planı sabitleyin ve içeriği ortalayın */
-/* Arka planı ekranı kaplayacak ve içeriği ortalayacak şekilde tutuyoruz */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -814,11 +812,12 @@
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.8);
   display: flex;
-  align-items: center;    /* Dikeyde ortalar */
-  justify-content: center; /* Yatayda ortalar */
+  align-items: center;
+  justify-content: center;
   z-index: 2000;
   backdrop-filter: blur(5px);
 }
+
 .stat-card-trend {
   font-size: 11px;
   font-weight: 600;
@@ -851,7 +850,7 @@
 
 .daily-card:hover {
   transform: translateY(-4px);
-  border-color: rgba(99, 102, 241, 0.3);
+  border-color: rgba(239, 68, 68, 0.3);
 }
 
 .daily-header {
@@ -980,7 +979,7 @@
 
 .top-product-card:hover {
   transform: translateY(-4px);
-  border-color: rgba(99, 102, 241, 0.3);
+  border-color: rgba(239, 68, 68, 0.3);
 }
 
 .top-rank {
@@ -989,7 +988,7 @@
   left: -10px;
   width: 32px;
   height: 32px;
-  background: linear-gradient(135deg, #f59e0b, #d97706);
+  background: linear-gradient(135deg, #ef4444, #dc2626);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -1020,7 +1019,7 @@
 
 .top-product-price {
   font-size: 13px;
-  color: #818cf8;
+  color: #f87171;
   margin-bottom: 4px;
 }
 
@@ -1060,14 +1059,14 @@
 .top-product-rank {
   width: 32px;
   height: 32px;
-  background: rgba(99, 102, 241, 0.2);
+  background: rgba(239, 68, 68, 0.2);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 900;
   font-size: 14px;
-  color: #818cf8;
+  color: #f87171;
 }
 
 .top-product-info {
@@ -1112,13 +1111,13 @@
 
 .category-stat-card:hover {
   transform: translateY(-2px);
-  border-color: rgba(99, 102, 241, 0.3);
+  border-color: rgba(239, 68, 68, 0.3);
 }
 
 .category-name {
   font-size: 14px;
   font-weight: 700;
-  color: #818cf8;
+  color: #f87171;
   margin-bottom: 8px;
 }
 
@@ -1150,21 +1149,20 @@
     grid-template-columns: 1fr;
   }
 }
-/* Kutunun boyutunu küçültüyoruz */
+
 .modal-content {
   background: #1e293b;
-  width: 90%;           /* Küçük ekranlarda pay bırakır */
-  max-width: 420px;     /* Kutuyu 420px'e sabitledik (oldukça derli toplu) */
-  max-height: 80vh;     /* Ekran boyunun %80'ini geçmez */
-  padding: 20px;        /* İç boşluğu azalttık */
+  width: 90%;
+  max-width: 420px;
+  max-height: 80vh;
+  padding: 20px;
   border-radius: 16px;
   position: relative;
-  overflow-y: auto;     /* İçerik sığmazsa kendi içinde kayar */
+  overflow-y: auto;
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
-/* Kapatma simgesini (X) kutunun sağ üstüne sabitliyoruz */
 .modal-close {
   position: absolute;
   top: 12px;
@@ -1180,33 +1178,31 @@
   color: #f87171;
 }
 
-/* Form içindeki satırları (yan yana olanlar) daraltıyoruz */
 .modal-form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;            /* Boşlukları azalttık */
+  gap: 12px;
   margin-bottom: 10px;
 }
 
-/* Input ve Label boyutlarını küçültüyoruz */
 .modal-form-field {
   margin-bottom: 12px;
 }
 
 .modal-label {
-  font-size: 0.8rem;    /* Daha küçük yazı */
+  font-size: 0.8rem;
   margin-bottom: 4px;
   color: #94a3b8;
 }
 
 .modal-input {
-  height: 38px;         /* Daha ince inputlar */
+  height: 38px;
   font-size: 0.85rem;
   padding: 8px 12px;
 }
 
 .modal-textarea {
-  min-height: 60px;     /* Açıklama kutusunu küçülttük */
+  min-height: 60px;
   font-size: 0.85rem;
 }
 
@@ -1234,29 +1230,10 @@
   color: white;
 }
 
-.modal-close {
-  color: rgba(255, 255, 255, 0.4);
-  transition: color 0.3s ease;
-  cursor: pointer;
-  background: none;
-  border: none;
-}
-
-.modal-close:hover {
-  color: white;
-}
-
-/* Modal Form */
 .modal-form {
   display: flex;
   flex-direction: column;
   gap: 20px;
-}
-
-.modal-form-field {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
 }
 
 .modal-label {
@@ -1264,19 +1241,12 @@
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #a5b4fc;
+  color: #fca5a5;
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
-.modal-form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-}
-
-/* SELECT ve INPUT stilleri - BUNLAR ÖNEMLİ! */
 .modal-input,
 .modal-select,
 .modal-textarea {
@@ -1297,9 +1267,9 @@
 .modal-input:focus,
 .modal-select:focus,
 .modal-textarea:focus {
-  border-color: #4f46e5;
+  border-color: #ef4444;
   background: rgba(255, 255, 255, 0.12);
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
 }
 
 .modal-select {
@@ -1342,14 +1312,14 @@
   width: 18px;
   height: 18px;
   cursor: pointer;
-  accent-color: #4f46e5;
+  accent-color: #ef4444;
 }
 
 /* File Upload */
 .file-upload {
   padding: 16px;
-  background: rgba(79, 70, 229, 0.08);
-  border: 2px dashed rgba(79, 70, 229, 0.3);
+  background: rgba(239, 68, 68, 0.08);
+  border: 2px dashed rgba(239, 68, 68, 0.3);
   border-radius: 16px;
   text-align: center;
   cursor: pointer;
@@ -1357,13 +1327,13 @@
 }
 
 .file-upload:hover {
-  border-color: #4f46e5;
-  background: rgba(79, 70, 229, 0.12);
+  border-color: #ef4444;
+  background: rgba(239, 68, 68, 0.12);
 }
 
 .file-upload-label {
   cursor: pointer;
-  color: #a5b4fc;
+  color: #fca5a5;
   font-weight: 700;
   font-size: 13px;
 }
@@ -1398,7 +1368,7 @@
 
 .modal-btn-submit {
   flex: 1;
-  background: #4f46e5;
+  background: #ef4444;
   padding: 14px;
   border-radius: 14px;
   font-weight: 900;
@@ -1413,7 +1383,7 @@
 }
 
 .modal-btn-submit:hover {
-  background: #4338ca;
+  background: #dc2626;
   transform: translateY(-2px);
 }
 
@@ -1442,10 +1412,10 @@
   align-items: center;
   gap: 6px;
   padding: 6px 12px;
-  background: rgba(59, 130, 246, 0.2);
+  background: rgba(239, 68, 68, 0.2);
   border: none;
   border-radius: 8px;
-  color: #60a5fa;
+  color: #f87171;
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
@@ -1453,7 +1423,7 @@
 }
 
 .desc-image-btn:hover {
-  background: #3b82f6;
+  background: #ef4444;
   color: white;
 }
 
@@ -1538,18 +1508,19 @@
   color: #94a3b8;
   padding: 40px;
 }
+
 /* Select kutusunun genel stili */
 select.modal-input {
-  background-color: rgba(30, 41, 59, 0.5); /* Koyu arka plan */
-  color: #ffffff !important; /* Yazı rengi beyaz */
+  background-color: rgba(30, 41, 59, 0.5);
+  color: #ffffff !important;
   cursor: pointer;
-  appearance: none; /* Varsayılan tarayıcı okunu kaldırır (isteğe bağlı) */
+  appearance: none;
 }
 
 /* Açılan listenin (options) içindeki yazıların görünmesi için */
 select.modal-input option {
-  background-color: #1e293b; /* Açılan listenin arka planı */
-  color: #ffffff; /* Seçeneklerin yazı rengi */
+  background-color: #1e293b;
+  color: #ffffff;
   padding: 10px;
 }
 
@@ -1557,8 +1528,9 @@ select.modal-input option {
 select.modal-input:focus {
   background-color: rgba(30, 41, 59, 0.8);
   outline: none;
-  border-color: #6366f1;
+  border-color: #ef4444;
 }
+
 /* Product Badges */
 .product-discount-badge-small {
   background: linear-gradient(135deg, #ef4444, #dc2626);
