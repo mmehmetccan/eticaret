@@ -439,14 +439,13 @@ const AdminPanel = () => {
     }
     setLoading(false);
   };
-
-  const handleImageUpload = async (e) => {
+const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
     const formData = new FormData();
     formData.append('image', file);
-    // İLK RESİMSE OTOMATİK ANA RESİM YAP
+    // İLK RESİMSE veya Ana Görsel olarak seçildiyse is_main = true
     const isFirstImage = productImages.length === 0;
     formData.append('is_main', isFirstImage ? 'true' : 'false');
     formData.append('display_order', String(productImages.length));
@@ -458,8 +457,7 @@ const AdminPanel = () => {
         });
         toast.success('🖼️ Resim başarıyla eklendi!');
         fetchProductImages(selectedProductForImages.id);
-        // Ürün listesini yenile (image_url güncellendi)
-        fetchAdminData();
+        fetchAdminData(); // Ürün listesini yenile
     } catch (err) {
         console.error("Yükleme Hatası Detayı:", err.response?.data);
         toast.error(err.response?.data?.error || "Resim yüklenemedi");

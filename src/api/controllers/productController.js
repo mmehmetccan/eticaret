@@ -82,18 +82,15 @@ const addProduct = async (req, res) => {
         
         // Fiyatı sadece rakamlara çevir
         let cleanPrice = 0;
-if (price) {
-    let p = price.toString();
-
-    if (p.includes(',') && p.includes('.')) {
-        p = p.replace(/\./g, '').replace(',', '.');
-    } else if (p.includes(',')) {
-        p = p.replace(',', '.');
-    }
-
-    cleanPrice = parseFloat(p);
-}
-        
+        if (price) {
+            let p = price.toString();
+            if (p.includes(',') && p.includes('.')) {
+                p = p.replace(/\./g, '').replace(',', '.');
+            } else if (p.includes(',')) {
+                p = p.replace(',', '.');
+            }
+            cleanPrice = parseFloat(p);
+        }
         
         console.log("💰 Temizlenmiş fiyat:", cleanPrice);
         
@@ -106,37 +103,40 @@ if (price) {
             image_url = `/uploads/${req.file.filename}`;
         }
         
+        // 1. Önce ürünü ekle
         const query = `
-    INSERT INTO products 
-    (name, category, price, description, stock_quantity, image_url, discount, is_new, free_shipping, details) 
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-`;
-const [result] = await db.execute(query, [
-    name, category, cleanPrice, description || '', stock_quantity || 0, 
-    image_url, discount || 0, is_new === 'true' ? 1 : 0, 
-    free_shipping === 'true' ? 1 : 0,
-    details || ''
-]);
+            INSERT INTO products 
+            (name, category, price, description, stock_quantity, image_url, discount, is_new, free_shipping, details) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `;
+        const [result] = await db.execute(query, [
+            name, category, cleanPrice, description || '', stock_quantity || 0, 
+            image_url, discount || 0, is_new === 'true' ? 1 : 0, 
+            free_shipping === 'true' ? 1 : 0,
+            details || ''
+        ]);
         
+        const productId = result.insertId;
+        
+        // 2. Eğer ana resim yüklendiyse, product_images tablosuna da ekle
         if (image_url) {
-    // Hem ana tabloyu hem de resimler tablosunu güncellediğinden emin oluyoruz
-    await db.execute(
-        'UPDATE products SET image_url = ? WHERE id = ?',
-        [image_url, result.insertId]
-    );
-    await db.execute(
-        'INSERT INTO product_images (product_id, image_url, is_main, display_order) VALUES (?, ?, ?, ?)',
-        [result.insertId, image_url, 1, 0]
-    );
-}
+            await db.execute(
+                'INSERT INTO product_images (product_id, image_url, is_main, display_order) VALUES (?, ?, ?, ?)',
+                [productId, image_url, 1, 0]
+            );
+            // Products tablosunu da güncelle (image_url zaten eklendi ama garantile)
+            await db.execute(
+                'UPDATE products SET image_url = ? WHERE id = ?',
+                [image_url, productId]
+            );
+        }
         
-        res.status(201).json({ message: "Ürün eklendi", productId: result.insertId });
+        res.status(201).json({ message: "Ürün eklendi", productId: productId });
     } catch (err) {
         console.error("Ekleme hatası:", err);
         res.status(500).json({ error: "Ekleme hatası: " + err.message });
     }
 };
-
 const updateProduct = async (req, res) => {
     const { id } = req.params;
     
