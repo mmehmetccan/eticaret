@@ -11,8 +11,7 @@ services:
       - .env
     # Resimlerin silinmemesi için bu köprü şart
     volumes:
-      - ./backend/uploads:/app/uploads
-    user: "1000:1000"
+      - ./uploads:/app/uploads
     restart: always
     depends_on:
       - mysql
