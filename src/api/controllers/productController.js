@@ -74,39 +74,18 @@ const getProductById = async (req, res) => {
     }
 };
 
+// productController.js içindeki addProduct kısmını bu mantıkla güncelle:
 const addProduct = async (req, res) => {
-    console.log("📦 ADD PRODUCT - Body:", req.body);
-    console.log("📸 ADD PRODUCT - File:", req.file);
-    
     try {
         const { name, category, price, description, stock_quantity, discount, is_new, free_shipping, details } = req.body;
-        
-        let cleanPrice = 0;
-        if (price) {
-            let p = price.toString();
-            if (p.includes(',') && p.includes('.')) {
-                p = p.replace(/\./g, '').replace(',', '.');
-            } else if (p.includes(',')) {
-                p = p.replace(',', '.');
-            }
-            cleanPrice = parseFloat(p);
-        }
-        
-        console.log("💰 Temizlenmiş fiyat:", cleanPrice);
-        
-        if (!name) return res.status(400).json({ error: "Ürün adı zorunludur." });
-        if (!category) return res.status(400).json({ error: "Kategori zorunludur." });
-        if (!cleanPrice || isNaN(cleanPrice)) return res.status(400).json({ error: "Geçerli bir fiyat zorunludur." });
+        let cleanPrice = parseFloat(price) || 0;
         
         let image_url = null;
         if (req.file) {
             image_url = `/uploads/${req.file.filename}`;
-            console.log("📸 Resim yüklendi:", image_url);
-        } else {
-            console.log("⚠️ Resim dosyası gelmedi!");
         }
         
-        // Ürünü ekle
+        // 1. Ürünü products tablosuna ekle
         const query = `
             INSERT INTO products 
             (name, category, price, description, stock_quantity, image_url, discount, is_new, free_shipping, details) 
@@ -115,13 +94,12 @@ const addProduct = async (req, res) => {
         const [result] = await db.execute(query, [
             name, category, cleanPrice, description || '', stock_quantity || 0, 
             image_url, discount || 0, is_new === 'true' ? 1 : 0, 
-            free_shipping === 'true' ? 1 : 0,
-            details || ''
+            free_shipping === 'true' ? 1 : 0, details || ''
         ]);
         
         const productId = result.insertId;
         
-        // Ana resim varsa product_images tablosuna da ekle
+        // 2. ÖNEMLİ: Ana görseli aynı zamanda product_images tablosuna is_main=1 olarak ekle
         if (image_url) {
             await db.execute(
                 'INSERT INTO product_images (product_id, image_url, is_main, display_order) VALUES (?, ?, ?, ?)',
@@ -129,12 +107,13 @@ const addProduct = async (req, res) => {
             );
         }
         
-        res.status(201).json({ message: "Ürün eklendi", productId: productId });
+        res.status(201).json({ message: "Ürün ve ana görsel kaydedildi", productId });
     } catch (err) {
-        console.error("Ekleme hatası:", err);
-        res.status(500).json({ error: "Ekleme hatası: " + err.message });
+        res.status(500).json({ error: err.message });
     }
 };
+
+
 const updateProduct = async (req, res) => {
     const { id } = req.params;
     
@@ -151,47 +130,33 @@ const updateProduct = async (req, res) => {
             cleanPrice = parseInt(numericString) || 0;
         }
 
-        let query;
-        let params;
         let image_url = null;
-        
         if (req.file) {
             image_url = `/uploads/${req.file.filename}`;
-            query = `UPDATE products SET 
-                        name=?, category=?, price=?, description=?, stock_quantity=?, 
-                        discount=?, is_new=?, free_shipping=?, details=?, image_url=? 
-                     WHERE id=?`;
-            params = [name, category, cleanPrice, description || '', stock_quantity, discount, is_new, free_shipping, details || '', image_url, id];
+            // 1. Products tablosundaki ana görsel yolunu güncelle
+            const query = `UPDATE products SET 
+                            name=?, category=?, price=?, description=?, stock_quantity=?, 
+                            discount=?, is_new=?, free_shipping=?, details=?, image_url=? 
+                         WHERE id=?`;
+            await db.execute(query, [name, category, cleanPrice, description || '', stock_quantity, discount, is_new, free_shipping, details || '', image_url, id]);
+
+            // 2. product_images tablosundaki eski ana resmi pasif yap ve yenisini ekle
+            await db.execute('UPDATE product_images SET is_main = FALSE WHERE product_id = ?', [id]);
+            await db.execute(
+                'INSERT INTO product_images (product_id, image_url, is_main, display_order) VALUES (?, ?, ?, ?)',
+                [id, image_url, 1, 0]
+            );
         } else {
-            query = `UPDATE products SET 
-                        name=?, category=?, price=?, description=?, stock_quantity=?, 
-                        discount=?, is_new=?, free_shipping=?, details=? 
-                     WHERE id=?`;
-            params = [name, category, cleanPrice, description || '', stock_quantity, discount, is_new, free_shipping, details || '', id];
+            // Görsel değişmediyse sadece diğer bilgileri güncelle
+            const query = `UPDATE products SET 
+                            name=?, category=?, price=?, description=?, stock_quantity=?, 
+                            discount=?, is_new=?, free_shipping=?, details=? 
+                         WHERE id=?`;
+            await db.execute(query, [name, category, cleanPrice, description || '', stock_quantity, discount, is_new, free_shipping, details || '', id]);
         }
 
-        await db.execute(query, params);
-        
-        // Eğer yeni bir ana resim yüklendiyse, product_images tablosunu da güncelle
-        if (image_url) {
-            // Önce bu ürünün eski ana resimlerini kaldır
-            await db.execute('UPDATE product_images SET is_main = FALSE WHERE product_id = ?', [id]);
-            // Yeni resmi ekle veya varsa güncelle
-            const [existing] = await db.execute('SELECT id FROM product_images WHERE product_id = ? AND image_url = ?', [id, image_url]);
-            if (existing.length === 0) {
-                await db.execute(
-                    'INSERT INTO product_images (product_id, image_url, is_main, display_order) VALUES (?, ?, ?, ?)',
-                    [id, image_url, 1, 0]
-                );
-            } else {
-                await db.execute('UPDATE product_images SET is_main = 1 WHERE id = ?', [existing[0].id]);
-            }
-        }
-        
         res.json({ message: "Ürün başarıyla güncellendi.", price: cleanPrice });
-        
     } catch (err) {
-        console.error("❌ Güncelleme hatası:", err);
         res.status(500).json({ error: "Sistem hatası: " + err.message });
     }
 };
@@ -211,44 +176,35 @@ const deleteProduct = async (req, res) => {
 const addProductImage = async (req, res) => {
     try {
         const { productId } = req.params;
-        
-        if (!req.file) {
-            return res.status(400).json({ error: "Resim dosyası gelmedi." });
-        }
+        if (!req.file) return res.status(400).json({ error: "Resim dosyası gelmedi." });
 
         const image_url = `/uploads/${req.file.filename}`;
         const { is_main, display_order } = req.body;
-        const isMainBool = is_main === 'true' || is_main === true || is_main === 1;
         
-        // Mevcut resim sayısını kontrol et
+        // Formdan gelen veya ilk resim olma durumuna göre is_main belirle
         const [countResult] = await db.execute(
             'SELECT COUNT(*) as count FROM product_images WHERE product_id = ?',
             [productId]
         );
         const isFirstImage = countResult[0].count === 0;
-        
-        if (isMainBool || isFirstImage) {
-            // Önce diğer resimlerin is_main'ini kaldır
+        const isMainBool = (is_main === 'true' || is_main === true || is_main === 1) || isFirstImage;
+
+        if (isMainBool) {
+            // Eğer bu resim ana resim olacaksa diğerlerini pasif yap
             await db.execute('UPDATE product_images SET is_main = FALSE WHERE product_id = ?', [productId]);
+            // Products tablosundaki kapak fotoğrafını da güncelle
+            await db.execute('UPDATE products SET image_url = ? WHERE id = ?', [image_url, productId]);
         }
-        
-        // Yeni resmi ekle
+
+        // Galeriye ekle
         await db.execute(
             'INSERT INTO product_images (product_id, image_url, is_main, display_order) VALUES (?, ?, ?, ?)',
-            [productId, image_url, isMainBool || isFirstImage, display_order || 0]
+            [productId, image_url, isMainBool ? 1 : 0, display_order || 0]
         );
-        
-        // Eğer bu resim ana resimse veya ilk resimse, products tablosunu güncelle
-        if (isMainBool || isFirstImage) {
-            await db.execute(
-                'UPDATE products SET image_url = ? WHERE id = ?',
-                [image_url, productId]
-            );
-        }
-        
-        res.json({ message: "Resim başarıyla eklendi.", image_url });
+
+        res.json({ message: "Resim başarıyla galeriye eklendi.", image_url });
     } catch (err) {
-        console.error("Resim kayıt hatası:", err);
+        console.error("Hata:", err);
         res.status(500).json({ error: "Veritabanı kayıt hatası." });
     }
 };
