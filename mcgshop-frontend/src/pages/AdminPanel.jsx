@@ -446,24 +446,28 @@ const AdminPanel = () => {
 
     const formData = new FormData();
     formData.append('image', file);
-    formData.append('is_main', productImages.length === 0 ? 'true' : 'false');
+    // İLK RESİMSE OTOMATİK ANA RESİM YAP
+    const isFirstImage = productImages.length === 0;
+    formData.append('is_main', isFirstImage ? 'true' : 'false');
     formData.append('display_order', String(productImages.length));
 
     try {
-      setImageUploadLoading(true);
-      await api.post(`/admin/add-product-image/${selectedProductForImages.id}`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
-      toast.success('🖼️ Resim başarıyla eklendi!');
-      fetchProductImages(selectedProductForImages.id);
+        setImageUploadLoading(true);
+        await api.post(`/admin/add-product-image/${selectedProductForImages.id}`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        });
+        toast.success('🖼️ Resim başarıyla eklendi!');
+        fetchProductImages(selectedProductForImages.id);
+        // Ürün listesini yenile (image_url güncellendi)
+        fetchAdminData();
     } catch (err) {
-      console.error("Yükleme Hatası Detayı:", err.response?.data);
-      toast.error(err.response?.data?.error || "Resim yüklenemedi");
+        console.error("Yükleme Hatası Detayı:", err.response?.data);
+        toast.error(err.response?.data?.error || "Resim yüklenemedi");
     } finally {
-      setImageUploadLoading(false);
-      e.target.value = '';
+        setImageUploadLoading(false);
+        e.target.value = '';
     }
-  };
+};
 
   const deleteProductImage = async (imageId) => {
     if (!window.confirm("Bu resmi silmek istediğinize emin misiniz?")) return;

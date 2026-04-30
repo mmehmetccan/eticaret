@@ -197,31 +197,41 @@ const deleteProduct = async (req, res) => {
 const addProductImage = async (req, res) => {
     try {
         const { productId } = req.params;
-        console.log("📸 Gelen Dosya:", req.file); // Sunucu terminalinde (docker logs) bunu kontrol et
-
-          console.log("📸 req.file:", req.file); // DEBUG - Çok önemli!
-    console.log("📸 req.params:", req.params);
-    console.log("📸 req.body:", req.body);
-    
+        
         if (!req.file) {
-            return res.status(400).json({ error: "Resim dosyası gelmedi. Multer çalışmıyor olabilir." });
+            return res.status(400).json({ error: "Resim dosyası gelmedi." });
         }
 
         const image_url = `/uploads/${req.file.filename}`;
         const { is_main, display_order } = req.body;
-
-        // Veri tipi kontrolü (is_main string olarak gelebilir)
         const isMainBool = is_main === 'true' || is_main === true || is_main === 1;
-
-        if (isMainBool) {
+        
+        // Mevcut resim sayısını kontrol et
+        const [countResult] = await db.execute(
+            'SELECT COUNT(*) as count FROM product_images WHERE product_id = ?',
+            [productId]
+        );
+        const isFirstImage = countResult[0].count === 0;
+        
+        if (isMainBool || isFirstImage) {
+            // Önce diğer resimlerin is_main'ini kaldır
             await db.execute('UPDATE product_images SET is_main = FALSE WHERE product_id = ?', [productId]);
         }
-
+        
+        // Yeni resmi ekle
         await db.execute(
             'INSERT INTO product_images (product_id, image_url, is_main, display_order) VALUES (?, ?, ?, ?)',
-            [productId, image_url, isMainBool, display_order || 0]
+            [productId, image_url, isMainBool || isFirstImage, display_order || 0]
         );
-
+        
+        // Eğer bu resim ana resimse veya ilk resimse, products tablosunu güncelle
+        if (isMainBool || isFirstImage) {
+            await db.execute(
+                'UPDATE products SET image_url = ? WHERE id = ?',
+                [image_url, productId]
+            );
+        }
+        
         res.json({ message: "Resim başarıyla eklendi.", image_url });
     } catch (err) {
         console.error("Resim kayıt hatası:", err);
