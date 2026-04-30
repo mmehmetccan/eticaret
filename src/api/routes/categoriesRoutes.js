@@ -4,7 +4,7 @@ const db = require('../../config/db');
 const { verifyToken, isAdmin } = require('../middlewares/authMiddleware');
 
 // Kategorileri getir (HERKES)
-router.get('/', async (req, res) => {
+router.get('/categories', async (req, res) => {
   try {
     const [categories] = await db.query('SELECT * FROM categories ORDER BY id');
     res.json(categories);

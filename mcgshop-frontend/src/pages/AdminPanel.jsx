@@ -856,7 +856,7 @@ const handleImageUpload = async (e) => {
                               </span>
                             </div>
                           </div>
-                          <h3 className="product-name">{product.name}</h3>
+<h3 className="product-name" style={{ color: '#ffffff', fontWeight: '700' }}>{product.name}</h3>
                           <div className="product-price-row">
                             {hasDiscount ? (
                               <>
@@ -1223,7 +1223,7 @@ const handleImageUpload = async (e) => {
                 </label>
               </div>
             </div>
-{/*
+
             <div className="images-grid">
               {productImages.length === 0 ? (
                 <p className="no-images-text">Henüz resim eklenmemiş.</p>
@@ -1236,7 +1236,7 @@ const handleImageUpload = async (e) => {
                   </div>
                 ))
               )}
-            </div>*/}
+            </div>
 
             <div className="modal-actions">
               <button onClick={() => setShowImageModal(false)} className="modal-btn-submit">Kapat</button>
