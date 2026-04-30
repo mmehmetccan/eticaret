@@ -295,31 +295,36 @@ const CategoryProducts = () => {
         <div className="category-products-grid">
           {filteredProducts.map((product) => {
              const isOutOfStock = product.stock_quantity <= 0;
-  const hasDiscount = product.discount > 0;
-  const isNew = product.is_new === 1 || product.is_new === true;
-  const hasFreeShipping = product.free_shipping === 1 || product.free_shipping === true;
+
+             const hasDiscount = product.discount > 0;
+
+            const isNew = product.is_new === 1 || product.is_new === true;
+
+const hasFreeShipping = product.free_shipping === 1 || product.free_shipping === true;
   const discountedPrice = getDiscountedPrice(product.price, product.discount);
   const avgRating = getRatingValue(product.avg_rating || product.rating);
   const totalReviews = product.total_reviews || product.rating_count || 0;
   const isFavorite = product.isFavorite || false;
 
             return (
-              <Link key={product.id} to={`/product/${product.id}`} className="category-product-card">
-  {hasDiscount && !isOutOfStock && (
-  <div className="cat-discount-badge" style={{ top: '12px', left: '12px', position: 'absolute' }}>
-    -%{product.discount}
-  </div>
-)}
+    <Link key={product.id} to={`/product/${product.id}`} className="category-product-card">
+      {/* Rozetleri (badges) buraya, Link içine alıyoruz */}
+      {hasDiscount && !isOutOfStock && (
+        <div className="cat-discount-badge" style={{ top: '12px', left: '12px', position: 'absolute' }}>
+          -%{product.discount}
+        </div>
+      )}
 
-{isNew && !isOutOfStock && !hasDiscount && (
-  <div className="cat-new-badge" style={{ 
-    top: hasDiscount ? '52px' : '12px', 
-    left: '12px', 
-    position: 'absolute' 
-  }}>
-    Yeni
-  </div>
-)}
+      {/* isNew kullanımı burada güvenli */}
+      {isNew && !isOutOfStock && !hasDiscount && (
+        <div className="cat-new-badge" style={{ 
+          top: hasDiscount ? '52px' : '12px', 
+          left: '12px', 
+          position: 'absolute' 
+        }}>
+          Yeni
+        </div>
+      )}
 
 {hasFreeShipping && !isOutOfStock && (
   <div className="cat-cargo-badge-top" style={{ 

@@ -76,11 +76,11 @@ const getProductById = async (req, res) => {
 
 const addProduct = async (req, res) => {
     console.log("📦 ADD PRODUCT - Body:", req.body);
+    console.log("📸 ADD PRODUCT - File:", req.file);
     
     try {
         const { name, category, price, description, stock_quantity, discount, is_new, free_shipping, details } = req.body;
         
-        // Fiyatı sadece rakamlara çevir
         let cleanPrice = 0;
         if (price) {
             let p = price.toString();
@@ -101,9 +101,12 @@ const addProduct = async (req, res) => {
         let image_url = null;
         if (req.file) {
             image_url = `/uploads/${req.file.filename}`;
+            console.log("📸 Resim yüklendi:", image_url);
+        } else {
+            console.log("⚠️ Resim dosyası gelmedi!");
         }
         
-        // 1. Önce ürünü ekle
+        // Ürünü ekle
         const query = `
             INSERT INTO products 
             (name, category, price, description, stock_quantity, image_url, discount, is_new, free_shipping, details) 
@@ -118,16 +121,11 @@ const addProduct = async (req, res) => {
         
         const productId = result.insertId;
         
-        // 2. Eğer ana resim yüklendiyse, product_images tablosuna da ekle
+        // Ana resim varsa product_images tablosuna da ekle
         if (image_url) {
             await db.execute(
                 'INSERT INTO product_images (product_id, image_url, is_main, display_order) VALUES (?, ?, ?, ?)',
                 [productId, image_url, 1, 0]
-            );
-            // Products tablosunu da güncelle (image_url zaten eklendi ama garantile)
-            await db.execute(
-                'UPDATE products SET image_url = ? WHERE id = ?',
-                [image_url, productId]
             );
         }
         
@@ -147,19 +145,18 @@ const updateProduct = async (req, res) => {
         const is_new = req.body.is_new === 'true' || req.body.is_new === '1' || req.body.is_new === 1 ? 1 : 0;
         const free_shipping = req.body.free_shipping === 'true' || req.body.free_shipping === '1' || req.body.free_shipping === 1 ? 1 : 0;
         
-        // FİYAT TEMİZLEME: Gelen verideki tüm noktaları/virgülleri temizleyip tam sayıya çeviriyoruz
         let cleanPrice = 0;
         if (priceRaw) {
-            // Sadece rakamları tut (Regex ile tüm non-numeric karakterleri siliyoruz)
             const numericString = priceRaw.toString().split('.')[0].replace(/[^0-9]/g, '');
             cleanPrice = parseInt(numericString) || 0;
         }
 
         let query;
         let params;
+        let image_url = null;
         
         if (req.file) {
-            const image_url = `/uploads/${req.file.filename}`;
+            image_url = `/uploads/${req.file.filename}`;
             query = `UPDATE products SET 
                         name=?, category=?, price=?, description=?, stock_quantity=?, 
                         discount=?, is_new=?, free_shipping=?, details=?, image_url=? 
@@ -173,7 +170,24 @@ const updateProduct = async (req, res) => {
             params = [name, category, cleanPrice, description || '', stock_quantity, discount, is_new, free_shipping, details || '', id];
         }
 
-        const [result] = await db.execute(query, params);
+        await db.execute(query, params);
+        
+        // Eğer yeni bir ana resim yüklendiyse, product_images tablosunu da güncelle
+        if (image_url) {
+            // Önce bu ürünün eski ana resimlerini kaldır
+            await db.execute('UPDATE product_images SET is_main = FALSE WHERE product_id = ?', [id]);
+            // Yeni resmi ekle veya varsa güncelle
+            const [existing] = await db.execute('SELECT id FROM product_images WHERE product_id = ? AND image_url = ?', [id, image_url]);
+            if (existing.length === 0) {
+                await db.execute(
+                    'INSERT INTO product_images (product_id, image_url, is_main, display_order) VALUES (?, ?, ?, ?)',
+                    [id, image_url, 1, 0]
+                );
+            } else {
+                await db.execute('UPDATE product_images SET is_main = 1 WHERE id = ?', [existing[0].id]);
+            }
+        }
+        
         res.json({ message: "Ürün başarıyla güncellendi.", price: cleanPrice });
         
     } catch (err) {
