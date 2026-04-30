@@ -1223,7 +1223,7 @@ const handleImageUpload = async (e) => {
                 </label>
               </div>
             </div>
-
+{/*
             <div className="images-grid">
               {productImages.length === 0 ? (
                 <p className="no-images-text">Henüz resim eklenmemiş.</p>
@@ -1236,7 +1236,7 @@ const handleImageUpload = async (e) => {
                   </div>
                 ))
               )}
-            </div>
+            </div>*/}
 
             <div className="modal-actions">
               <button onClick={() => setShowImageModal(false)} className="modal-btn-submit">Kapat</button>

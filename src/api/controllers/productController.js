@@ -176,35 +176,44 @@ const deleteProduct = async (req, res) => {
 const addProductImage = async (req, res) => {
     try {
         const { productId } = req.params;
-        if (!req.file) return res.status(400).json({ error: "Resim dosyası gelmedi." });
+        
+        if (!req.file) {
+            return res.status(400).json({ error: "Resim dosyası gelmedi." });
+        }
 
         const image_url = `/uploads/${req.file.filename}`;
         const { is_main, display_order } = req.body;
+        const isMainBool = is_main === 'true' || is_main === true || is_main === 1;
         
-        // Formdan gelen veya ilk resim olma durumuna göre is_main belirle
+        // Mevcut resim sayısını kontrol et
         const [countResult] = await db.execute(
             'SELECT COUNT(*) as count FROM product_images WHERE product_id = ?',
             [productId]
         );
         const isFirstImage = countResult[0].count === 0;
-        const isMainBool = (is_main === 'true' || is_main === true || is_main === 1) || isFirstImage;
-
-        if (isMainBool) {
-            // Eğer bu resim ana resim olacaksa diğerlerini pasif yap
+        
+        if (isMainBool || isFirstImage) {
+            // Önce diğer resimlerin is_main'ini kaldır
             await db.execute('UPDATE product_images SET is_main = FALSE WHERE product_id = ?', [productId]);
-            // Products tablosundaki kapak fotoğrafını da güncelle
-            await db.execute('UPDATE products SET image_url = ? WHERE id = ?', [image_url, productId]);
         }
-
-        // Galeriye ekle
+        
+        // Yeni resmi ekle
         await db.execute(
             'INSERT INTO product_images (product_id, image_url, is_main, display_order) VALUES (?, ?, ?, ?)',
-            [productId, image_url, isMainBool ? 1 : 0, display_order || 0]
+            [productId, image_url, isMainBool || isFirstImage, display_order || 0]
         );
-
-        res.json({ message: "Resim başarıyla galeriye eklendi.", image_url });
+        
+        // Eğer bu resim ana resimse veya ilk resimse, products tablosunu güncelle
+        if (isMainBool || isFirstImage) {
+            await db.execute(
+                'UPDATE products SET image_url = ? WHERE id = ?',
+                [image_url, productId]
+            );
+        }
+        
+        res.json({ message: "Resim başarıyla eklendi.", image_url });
     } catch (err) {
-        console.error("Hata:", err);
+        console.error("Resim kayıt hatası:", err);
         res.status(500).json({ error: "Veritabanı kayıt hatası." });
     }
 };

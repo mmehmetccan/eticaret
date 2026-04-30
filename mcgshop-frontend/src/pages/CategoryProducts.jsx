@@ -295,27 +295,25 @@ const CategoryProducts = () => {
         <div className="category-products-grid">
           {filteredProducts.map((product) => {
              const isOutOfStock = product.stock_quantity <= 0;
-
-             const hasDiscount = product.discount > 0;
-
-            const isNew = product.is_new === 1 || product.is_new === true;
-
-const hasFreeShipping = product.free_shipping === 1 || product.free_shipping === true;
-  const discountedPrice = getDiscountedPrice(product.price, product.discount);
+  const hasDiscount = product.discount > 0;
+  const isNew = product.is_new === 1 || product.is_new === true; // HATA BURADAN KAYNAKLANIYORDU
+  const hasFreeShipping = product.free_shipping === 1 || product.free_shipping === true;
+  
+  // Rating ve Price değerlerini güvenli hale getiriyoruz
   const avgRating = getRatingValue(product.avg_rating || product.rating);
   const totalReviews = product.total_reviews || product.rating_count || 0;
   const isFavorite = product.isFavorite || false;
 
             return (
     <Link key={product.id} to={`/product/${product.id}`} className="category-product-card">
-      {/* Rozetleri (badges) buraya, Link içine alıyoruz */}
+      {/* İndirim Rozeti */}
       {hasDiscount && !isOutOfStock && (
         <div className="cat-discount-badge" style={{ top: '12px', left: '12px', position: 'absolute' }}>
           -%{product.discount}
         </div>
       )}
 
-      {/* isNew kullanımı burada güvenli */}
+      {/* Yeni Ürün Rozeti - isNew burada artık tanımlı */}
       {isNew && !isOutOfStock && !hasDiscount && (
         <div className="cat-new-badge" style={{ 
           top: hasDiscount ? '52px' : '12px', 
@@ -326,77 +324,78 @@ const hasFreeShipping = product.free_shipping === 1 || product.free_shipping ===
         </div>
       )}
 
-{hasFreeShipping && !isOutOfStock && (
-  <div className="cat-cargo-badge-top" style={{ 
-    top: hasDiscount ? (isNew ? '92px' : '52px') : (isNew ? '52px' : '12px'),
-    left: '12px', 
-    position: 'absolute' 
-  }}>
-    <Truck size={12} /> Kargo Bedava
-  </div>
-)}
+      {/* Kargo Bedava Rozeti */}
+      {hasFreeShipping && !isOutOfStock && (
+        <div className="cat-cargo-badge-top" style={{ 
+          top: hasDiscount ? (isNew ? '92px' : '52px') : (isNew ? '52px' : '12px'),
+          left: '12px', 
+          position: 'absolute' 
+        }}>
+          <Truck size={12} /> Kargo Bedava
+        </div>
+      )}
 
-                {/* Favori Butonu */}
-                <button 
-                  className={`cat-favorite-btn ${isFavorite ? 'favorite-active' : ''}`}
-                  onClick={(e) => toggleFavorite(product.id, e)}
-                >
-                  <Heart size={18} fill={isFavorite ? "white" : "none"} />
-                </button>
+      {/* Favori Butonu */}
+      <button 
+        className={`cat-favorite-btn ${isFavorite ? 'favorite-active' : ''}`}
+        onClick={(e) => toggleFavorite(product.id, e)}
+      >
+        <Heart size={18} fill={isFavorite ? "white" : "none"} />
+      </button>
 
-                {/* Resim */}
-                <div className="cat-product-image-wrapper">
-                  <img 
-  src={getImageUrl(product.image_url)} 
-  alt={product.name}
-  className="cat-product-image"
-/>
-                  {isOutOfStock && (
-                    <div className="cat-outstock-overlay">
-                      <span className="cat-outstock-text">Tükendi</span>
-                    </div>
-                  )}
-                </div>
+      {/* Ürün Görseli */}
+      <div className="cat-product-image-wrapper">
+        <img 
+          src={getImageUrl(product.image_url)} 
+          alt={product.name}
+          className="cat-product-image"
+        />
+        {isOutOfStock && (
+          <div className="cat-outstock-overlay">
+            <span className="cat-outstock-text">Tükendi</span>
+          </div>
+        )}
+      </div>
 
-                {/* Bilgiler */}
-                <div className="cat-product-info">
-                  <div className="cat-product-prices">
-                    {hasDiscount && !isOutOfStock ? (
-                      <>
-                        <span className="cat-price-original">{formatPrice(product.price)} TL</span>
-      <span className="cat-price-discount">{formatDiscountedPrice(product.price, product.discount)} TL</span>
-    </>
-  ) : (
-    <span className="cat-price-current">{formatPrice(product.price)} TL</span>
-                    )}
-                  </div>
+      {/* Ürün Bilgileri */}
+      <div className="cat-product-info">
+        <div className="cat-product-prices">
+          {hasDiscount && !isOutOfStock ? (
+            <>
+              <span className="cat-price-original">{formatPrice(product.price)} TL</span>
+              <span className="cat-price-discount">{formatDiscountedPrice(product.price, product.discount)} TL</span>
+            </>
+          ) : (
+            <span className="cat-price-current">{formatPrice(product.price)} TL</span>
+          )}
+        </div>
 
-                  <h3 className="cat-product-name">{product.name}</h3>
+        <h3 className="cat-product-name">{product.name}</h3>
 
-                  <p className="cat-product-description">
-                    {product.description?.substring(0, 80) || "Premium kalite ürün"}
-                    {product.description?.length > 80 && "..."}
-                  </p>
+        <p className="cat-product-description">
+          {product.description?.substring(0, 80) || "Premium kalite ürün"}
+          {product.description?.length > 80 && "..."}
+        </p>
 
-                  <div className="cat-product-stats">
-                    <div className="cat-product-rating">
-                      <Star size={14} fill="#f59e0b" color="#f59e0b" />
-                      <span className="cat-rating-value">{avgRating.toFixed(1)}</span>
-                      <span className="cat-rating-count">({formatNumber(totalReviews)})</span>
-                    </div>
-                  </div>
+        <div className="cat-product-stats">
+          <div className="cat-product-rating">
+            <Star size={14} fill="#f59e0b" color="#f59e0b" />
+            <span className="cat-rating-value">{avgRating.toFixed(1)}</span>
+            <span className="cat-rating-count">({formatNumber(totalReviews)})</span>
+          </div>
+        </div>
 
-                  <button 
-                    className="cat-add-to-cart-btn"
-                    disabled={isOutOfStock}
-                    onClick={(e) => addToCart(product, e)}
-                  >
-                    {isOutOfStock ? 'Tükendi' : 'Sepete Ekle'}
-                  </button>
-                </div>
-              </Link>
-            );
-          })}
+        <button 
+          className="cat-add-to-cart-btn"
+          disabled={isOutOfStock}
+          onClick={(e) => addToCart(product, e)}
+        >
+          {isOutOfStock ? 'Tükendi' : 'Sepete Ekle'}
+        </button>
+      </div>
+    </Link>
+  );
+})}
         </div>
       )}
 
