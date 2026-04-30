@@ -1,22 +1,13 @@
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
-/**
- * URL Yapılandırması:
- * Canlı ortamda (Production) domain üzerinden, 
- * yerelde (Development) ise kendi bilgisayarındaki port üzerinden çalışır.
- */
-const API_URL = import.meta.env.VITE_API_URL || 'http://uskozmetik.com/api';
 const IS_PRODUCTION = import.meta.env.PROD;
 
-console.log(`🚀 API URL: ${API_URL} | Mod: ${IS_PRODUCTION ? 'PRODUCTION' : 'DEVELOPMENT'}`);
+console.log(`🚀 Mod: ${IS_PRODUCTION ? 'PRODUCTION' : 'DEVELOPMENT'}`);
 
 const api = axios.create({
-  baseURL: API_URL,
-  timeout: 30000,
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  baseURL: '/api',  // SADECE BUNU KULLAN - göreli yol
+  headers: { 'Content-Type': 'application/json' }
 });
 
 // Request Interceptor
@@ -48,11 +39,9 @@ api.interceptors.response.use(
     const status = error.response?.status;
     const errorMessage = error.response?.data?.error || error.response?.data?.message;
 
-    // Özel Hata Mesajlarını Göster (Backend'den gelen spesifik hatalar için)
     if (errorMessage) {
       toast.error(errorMessage);
     } else {
-      // Genel Durum Hataları
       if (error.code === 'ECONNABORTED') {
         toast.error('Bağlantı zaman aşımına uğradı.');
       } else if (status === 401) {
