@@ -10,6 +10,7 @@ const cartRoutes = require('./src/api/routes/cartRoutes');
 const orderRoutes = require('./src/api/routes/orderRoutes');
 const productRoutes = require('./src/api/routes/productRoutes');
 const reviewRoutes = require('./src/api/routes/reviewRoutes');
+const categoryRoutes = require('./src/api/routes/categoriesRoutes');
 
 // CORS ayarları
 const allowedOrigins = [
@@ -42,6 +43,7 @@ app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/reviews', reviewRoutes);
+app.use('/api/categories', categoryRoutes);
 
 // 2. SONRA STATİK DOSYALAR (Resimler ve Build dosyaları)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
