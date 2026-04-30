@@ -235,13 +235,17 @@ const Navbar = () => {
       <div className="mcg-navbar-container">
         
         {/* LOGO - RESİM OLARAK */}
-        <Link to="/" className="mcg-navbar-logo">
-          <img 
-            src="/us_kozmetik_yuvarlak.jpg" 
-            alt="US Kozmetik & Parfüm" 
-            className="mcg-navbar-logo-img"
-          />
-        </Link>
+       <Link to="/" className="mcg-navbar-logo">
+  <img 
+    src="/us_kozmetik_yuvarlak.jpg" 
+    alt="US Kozmetik & Parfüm" 
+    className="mcg-navbar-logo-img"
+  />
+  <div className="mcg-navbar-logo-text">
+    <span className="mcg-navbar-logo-brand">US</span>
+    <span className="mcg-navbar-logo-sub">KOZMETİK & PARFÜM</span>
+  </div>
+</Link>
 
         {/* KATEGORİ MENÜSÜ */}
         <div className="mcg-category-menu" ref={categoryRef}>
